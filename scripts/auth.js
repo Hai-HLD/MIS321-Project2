@@ -2,30 +2,26 @@
 // API configuration
 const API_URL = 'http://localhost:5000/api';
 
-// Clear any old localStorage data
-if (localStorage.getItem('currentUser') || localStorage.getItem('students') || localStorage.getItem('teachers')) {
-  localStorage.clear();
-}
-
 // Check if user is logged in
 function isLoggedIn() {
-  return sessionStorage.getItem('currentUser') !== null;
+  const currentUser = localStorage.getItem('bridgeEd_currentUser');
+  return currentUser !== null && currentUser !== '{}';
 }
 
 // Get current user
 function getCurrentUser() {
-  const userStr = sessionStorage.getItem('currentUser');
+  const userStr = localStorage.getItem('bridgeEd_currentUser');
   return userStr ? JSON.parse(userStr) : null;
 }
 
 // Save current user
 function setCurrentUser(user) {
-  sessionStorage.setItem('currentUser', JSON.stringify(user));
+  localStorage.setItem('bridgeEd_currentUser', JSON.stringify(user));
 }
 
 // Logout
 function logout() {
-  sessionStorage.clear();
+  localStorage.removeItem('bridgeEd_currentUser');
   window.location.replace('./login.html');
 }
 
