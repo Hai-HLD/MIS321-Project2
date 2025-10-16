@@ -1,0 +1,34 @@
+2-1
+Door 2 is the correct choice.
+Note: 2 doors tell the truth, 1 door lies
+Door1: The lying door is the way forward.
+Door2: This door does not lead anywhere.
+Door3: The door on the left is telling the truth.
+
+2-2
+Door 1 is the correct choice.
+Note: 2 doors tell the truth, 1 door lies
+Door1: This door is the way forward.
+Door2: The left door is the way forward.
+Door3: This door is the way forward.
+
+2-3
+Door 3 is the correct choice.
+Note: 2 doors tell the truth, 1 door lies
+Door1: The door on the right is lying.
+Door2: The right door is the way forward.
+Door3: This door does not lead anywhere.
+
+2-4
+Door 2 is the correct choice.
+Note: 2 doors tell the truth, 1 door lies
+Door1: There are 3 lying doors.
+Door2: This door lead you to the next room.
+Door3: The door on the left is lying.
+
+2-5
+Door 3 is the correct choice.
+Note: 2 doors tell the truth, 1 door lies
+Door1: The lying door is not the way forward.
+Door2: This door lead to the next room.
+Door3: There is 1 lying door.

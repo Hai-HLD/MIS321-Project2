@@ -321,64 +321,251 @@
     <script src="../scripts/auth.js"></script>
     
     <script>
-      // Sample student data with game completions
-      const students = [
-        { 
-          id: 1, name: "Alice Johnson", email: "alice@school.edu", level: "excellent", score: 95, 
-          gamesCompleted: 4, lastActive: "2 hours ago", progress: 95,
-          gameCompletions: [
-            { game: "Math Challenge", completed: true, score: 95, date: "2024-01-15" },
-            { game: "Word Builder", completed: true, score: 88, date: "2024-01-16" },
-            { game: "Geography Quiz", completed: true, score: 92, date: "2024-01-17" },
-            { game: "Robot Beeper Challenge", completed: true, score: 100, date: "2024-01-18" },
-            { game: "History Timeline", completed: false, score: 0, date: null }
-          ]
-        },
-        { 
-          id: 2, name: "Bob Smith", email: "bob@school.edu", level: "good", score: 78, 
-          gamesCompleted: 3, lastActive: "1 day ago", progress: 78,
-          gameCompletions: [
-            { game: "Math Challenge", completed: true, score: 75, date: "2024-01-14" },
-            { game: "Word Builder", completed: true, score: 82, date: "2024-01-15" },
-            { game: "Geography Quiz", completed: true, score: 77, date: "2024-01-16" },
-            { game: "Robot Beeper Challenge", completed: false, score: 0, date: null },
-            { game: "History Timeline", completed: false, score: 0, date: null }
-          ]
-        },
-        { 
-          id: 3, name: "Charlie Brown", email: "charlie@school.edu", level: "needs-help", score: 45, 
-          gamesCompleted: 1, lastActive: "3 days ago", progress: 45,
-          gameCompletions: [
-            { game: "Math Challenge", completed: true, score: 45, date: "2024-01-12" },
-            { game: "Word Builder", completed: false, score: 0, date: null },
-            { game: "Geography Quiz", completed: false, score: 0, date: null },
-            { game: "Robot Beeper Challenge", completed: false, score: 0, date: null },
-            { game: "History Timeline", completed: false, score: 0, date: null }
-          ]
-        },
-        { 
-          id: 4, name: "Diana Prince", email: "diana@school.edu", level: "excellent", score: 92, 
-          gamesCompleted: 5, lastActive: "30 minutes ago", progress: 92,
-          gameCompletions: [
-            { game: "Math Challenge", completed: true, score: 95, date: "2024-01-15" },
-            { game: "Word Builder", completed: true, score: 90, date: "2024-01-16" },
-            { game: "Geography Quiz", completed: true, score: 88, date: "2024-01-17" },
-            { game: "Robot Beeper Challenge", completed: true, score: 95, date: "2024-01-18" },
-            { game: "History Timeline", completed: true, score: 92, date: "2024-01-19" }
-          ]
-        },
-        { 
-          id: 5, name: "Eve Wilson", email: "eve@school.edu", level: "good", score: 81, 
-          gamesCompleted: 3, lastActive: "4 hours ago", progress: 81,
-          gameCompletions: [
-            { game: "Math Challenge", completed: true, score: 85, date: "2024-01-14" },
-            { game: "Word Builder", completed: true, score: 78, date: "2024-01-15" },
-            { game: "Geography Quiz", completed: true, score: 80, date: "2024-01-16" },
-            { game: "Robot Beeper Challenge", completed: false, score: 0, date: null },
-            { game: "History Timeline", completed: false, score: 0, date: null }
-          ]
+      // Check login status and user type when page loads
+      document.addEventListener('DOMContentLoaded', () => {
+        if (!window.Auth.isLoggedIn()) {
+          document.body.innerHTML = `
+            <div class="container py-5">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="alert alert-warning text-center">
+                    <h4 class="alert-heading">Login Required</h4>
+                    <p>You must be logged in to access the teacher dashboard.</p>
+                    <hr>
+                    <a href="./login.html" class="btn btn-primary">Go to Login</a>
+                    <a href="./home.html" class="btn btn-secondary ms-2">Back to Home</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          return;
         }
-      ];
+        
+        const currentUser = window.Auth.getCurrentUser();
+        if (currentUser.type !== 'teacher') {
+          document.body.innerHTML = `
+            <div class="container py-5">
+              <div class="row justify-content-center">
+                <div class="col-md-6">
+                  <div class="alert alert-danger text-center">
+                    <h4 class="alert-heading">Access Denied</h4>
+                    <p>Only teachers can access the teacher dashboard.</p>
+                    <hr>
+                    <a href="./home.html" class="btn btn-primary">Back to Home</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+          return;
+        }
+        
+        // User is a logged-in teacher, load the dashboard
+        loadTeacherDashboard();
+      });
+      
+      // Load teacher dashboard with real data
+      async function loadTeacherDashboard() {
+        try {
+          // Update dashboard title with teacher's name
+          const currentUser = window.Auth.getCurrentUser();
+          document.getElementById('dashboardTitle').textContent = `Welcome, ${currentUser.TeacherName}`;
+          
+          // Load real student data from API
+          const students = await window.Auth.getAllStudents();
+          console.log('Loaded students:', students);
+          
+          // Update the global students variable with real data
+          window.students = students.map(student => ({
+            id: student.StudentID,
+            name: student.StudentName,
+            email: `${student.StudentID}@school.edu`, // Generate email from ID
+            level: getPerformanceLevel(student),
+            score: getAverageScore(student),
+            gamesCompleted: getCompletedGamesCount(student),
+            lastActive: "Recently", // We don't have last active data
+            progress: getAverageScore(student),
+            gameCompletions: [
+              { game: "Math Challenge", completed: student.StudentScoreGame1 > 0, score: student.StudentScoreGame1 || 0, date: "Recent" },
+              { game: "Science Lab", completed: student.StudentScoreGame2 > 0, score: student.StudentScoreGame2 || 0, date: "Recent" },
+              { game: "Robot Beeper Challenge", completed: student.StudentScoreGame3 > 0, score: student.StudentScoreGame3 || 0, date: "Recent" },
+              { game: "Labyrinth of Lies", completed: student.StudentScoreGame4 > 0, score: student.StudentScoreGame4 || 0, date: "Recent" },
+              { game: "Future Game", completed: student.StudentScoreGame5 > 0, score: student.StudentScoreGame5 || 0, date: "Recent" }
+            ]
+          }));
+          
+          // Initialize the dashboard with real data
+          initializeDashboard();
+          
+        } catch (error) {
+          console.error('Error loading teacher dashboard:', error);
+          document.getElementById('dashboardTitle').textContent = 'Teacher Dashboard - Error Loading Data';
+        }
+      }
+      
+      // Helper functions for student data processing
+      function getPerformanceLevel(student) {
+        const avgScore = getAverageScore(student);
+        if (avgScore >= 80) return 'excellent';
+        if (avgScore >= 60) return 'good';
+        return 'needs-help';
+      }
+      
+      function getAverageScore(student) {
+        const scores = [
+          student.StudentScoreGame1 || 0,
+          student.StudentScoreGame2 || 0,
+          student.StudentScoreGame3 || 0,
+          student.StudentScoreGame4 || 0,
+          student.StudentScoreGame5 || 0
+        ].filter(score => score > 0);
+        
+        if (scores.length === 0) return 0;
+        return Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length);
+      }
+      
+      function getCompletedGamesCount(student) {
+        return [
+          student.StudentScoreGame1,
+          student.StudentScoreGame2,
+          student.StudentScoreGame3,
+          student.StudentScoreGame4,
+          student.StudentScoreGame5
+        ].filter(score => score > 0).length;
+      }
+      
+      // Initialize student data storage
+      let students = [];
+
+      // Load real student data from localStorage
+      function loadStudentData() {
+        try {
+          // Get all users from localStorage
+          const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
+          
+          // Filter for students only
+          const studentUsers = allUsers.filter(user => user.userType === 'student');
+          
+          // Convert to dashboard format
+          students = studentUsers.map((user, index) => {
+            const gameScores = [
+              user.StudentScoreGame1 || 0,
+              user.StudentScoreGame2 || 0,
+              user.StudentScoreGame3 || 0,
+              user.StudentScoreGame4 || 0,
+              user.StudentScoreGame5 || 0
+            ];
+            
+            const completedGames = gameScores.filter(score => score > 0);
+            const averageScore = completedGames.length > 0 ? 
+              Math.round(completedGames.reduce((sum, score) => sum + score, 0) / completedGames.length) : 0;
+            
+            return {
+              id: user.userId || (index + 1),
+              name: user.name || user.StudentName || 'Unknown Student',
+              email: user.email || `${user.userId}@school.edu`,
+              level: getPerformanceLevel(averageScore),
+              score: averageScore,
+              gamesCompleted: completedGames.length,
+              lastActive: getLastActiveTime(user.lastActive),
+              progress: averageScore,
+              gameCompletions: [
+                { 
+                  game: "Math Challenge", 
+                  completed: (user.StudentScoreGame1 || 0) > 0, 
+                  score: user.StudentScoreGame1 || 0, 
+                  date: user.game1Date || null 
+                },
+                { 
+                  game: "Science Lab", 
+                  completed: (user.StudentScoreGame2 || 0) > 0, 
+                  score: user.StudentScoreGame2 || 0, 
+                  date: user.game2Date || null 
+                },
+                { 
+                  game: "Robot Beeper Challenge", 
+                  completed: (user.StudentScoreGame3 || 0) > 0, 
+                  score: user.StudentScoreGame3 || 0, 
+                  date: user.game3Date || null 
+                },
+                { 
+                  game: "Labyrinth of Lies", 
+                  completed: (user.StudentScoreGame4 || 0) > 0, 
+                  score: user.StudentScoreGame4 || 0, 
+                  date: user.game4Date || null 
+                },
+                { 
+                  game: "History Timeline", 
+                  completed: (user.StudentScoreGame5 || 0) > 0, 
+                  score: user.StudentScoreGame5 || 0, 
+                  date: user.game5Date || null 
+                }
+              ]
+            };
+          });
+          
+          // If no real students found, show sample data
+          if (students.length === 0) {
+            students = getSampleData();
+          }
+          
+        } catch (error) {
+          console.error('Error loading student data:', error);
+          students = getSampleData();
+        }
+      }
+
+      // Get performance level based on score
+      function getPerformanceLevel(score) {
+        if (score >= 90) return 'excellent';
+        if (score >= 70) return 'good';
+        if (score >= 50) return 'average';
+        return 'needs-help';
+      }
+
+      // Get last active time
+      function getLastActiveTime(lastActive) {
+        if (!lastActive) return 'Never';
+        const now = new Date();
+        const active = new Date(lastActive);
+        const diffMs = now - active;
+        const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+        const diffDays = Math.floor(diffHours / 24);
+        
+        if (diffHours < 1) return 'Just now';
+        if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+        if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+        return 'Over a week ago';
+      }
+
+      // Sample data fallback
+      function getSampleData() {
+        return [
+          { 
+            id: 1, name: "Alice Johnson", email: "alice@school.edu", level: "excellent", score: 95, 
+            gamesCompleted: 4, lastActive: "2 hours ago", progress: 95,
+            gameCompletions: [
+              { game: "Math Challenge", completed: true, score: 95, date: "2024-01-15" },
+              { game: "Science Lab", completed: true, score: 88, date: "2024-01-16" },
+              { game: "Robot Beeper Challenge", completed: true, score: 92, date: "2024-01-17" },
+              { game: "Labyrinth of Lies", completed: true, score: 100, date: "2024-01-18" },
+              { game: "History Timeline", completed: false, score: 0, date: null }
+            ]
+          },
+          { 
+            id: 2, name: "Bob Smith", email: "bob@school.edu", level: "good", score: 78, 
+            gamesCompleted: 3, lastActive: "1 day ago", progress: 78,
+            gameCompletions: [
+              { game: "Math Challenge", completed: true, score: 75, date: "2024-01-14" },
+              { game: "Science Lab", completed: true, score: 82, date: "2024-01-15" },
+              { game: "Robot Beeper Challenge", completed: true, score: 77, date: "2024-01-16" },
+              { game: "Labyrinth of Lies", completed: false, score: 0, date: null },
+              { game: "History Timeline", completed: false, score: 0, date: null }
+            ]
+          }
+        ];
+      }
 
       let currentFilter = 'all';
       let searchTerm = '';
@@ -386,6 +573,7 @@
 
       // Initialize dashboard
       function initDashboard() {
+        loadStudentData(); // Load real student data first
         personalizeDashboard();
         updateStats();
         renderStudents();
@@ -676,26 +864,28 @@
           return;
         }
 
-        // Add new student
+        // Add new student to localStorage
+        const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
+        
         const newStudent = {
-          id: parseInt(studentId),
+          userId: studentId,
+          userType: 'student',
           name: name,
           email: email,
-          level: 'good',
-          score: 0,
-          gamesCompleted: 0,
-          lastActive: 'Just created',
-          progress: 0,
-          gameCompletions: [
-            { game: "Math Challenge", completed: false, score: 0, date: null },
-            { game: "Word Builder", completed: false, score: 0, date: null },
-            { game: "Geography Quiz", completed: false, score: 0, date: null },
-            { game: "Robot Beeper Challenge", completed: false, score: 0, date: null },
-            { game: "History Timeline", completed: false, score: 0, date: null }
-          ]
+          password: password,
+          StudentScoreGame1: 0,
+          StudentScoreGame2: 0,
+          StudentScoreGame3: 0,
+          StudentScoreGame4: 0,
+          StudentScoreGame5: 0,
+          lastActive: new Date().toISOString()
         };
+        
+        allUsers.push(newStudent);
+        localStorage.setItem('bridgeEd_users', JSON.stringify(allUsers));
 
-        students.push(newStudent);
+        // Reload student data
+        loadStudentData();
         updateStats();
         renderStudents();
         
@@ -715,18 +905,21 @@
 
       function deleteStudent() {
         if (selectedStudentId) {
-          const index = students.findIndex(s => s.id === selectedStudentId);
-          if (index > -1) {
-            students.splice(index, 1);
-            updateStats();
-            renderStudents();
-            
-            // Close modal
-            const modal = bootstrap.Modal.getInstance(document.getElementById('studentDetailsModal'));
-            modal.hide();
-            
-            alert('Student deleted successfully!');
-          }
+          // Remove student from localStorage
+          const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
+          const updatedUsers = allUsers.filter(user => user.userId !== selectedStudentId);
+          localStorage.setItem('bridgeEd_users', JSON.stringify(updatedUsers));
+          
+          // Reload student data
+          loadStudentData();
+          updateStats();
+          renderStudents();
+          
+          // Close modal
+          const modal = bootstrap.Modal.getInstance(document.getElementById('studentDetailsModal'));
+          modal.hide();
+          
+          alert('Student deleted successfully!');
         }
       }
 

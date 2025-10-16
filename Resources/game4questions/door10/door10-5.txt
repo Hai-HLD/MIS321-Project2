@@ -1,0 +1,5 @@
+Door 3 is the correct choice.
+Note: All 3 doors tell the truth
+Door1: This is not the way
+Door2: The Right Door is the Way
+Door3: This is the way.

@@ -73,6 +73,9 @@ async function getAllStudents() {
 // Update navbar based on login status
 function updateNavbar() {
   const authLink = document.getElementById('authLink');
+  const teacherDashboardNavItem = document.getElementById('teacherDashboardNavItem');
+  const profileNavItem = document.getElementById('profileNavItem');
+  
   if (authLink) {
     if (isLoggedIn()) {
       const user = getCurrentUser();
@@ -82,13 +85,51 @@ function updateNavbar() {
         e.preventDefault();
         logout();
       };
+      
+      // Show/hide Teacher Dashboard based on user type
+      if (teacherDashboardNavItem) {
+        if (user.type === 'teacher') {
+          teacherDashboardNavItem.style.display = 'block';
+        } else {
+          teacherDashboardNavItem.style.display = 'none';
+        }
+      }
+      
+      // Show/hide Profile link based on user type
+      if (profileNavItem) {
+        if (user.type === 'student') {
+          profileNavItem.style.display = 'block';
+        } else {
+          profileNavItem.style.display = 'none';
+        }
+      }
     } else {
       authLink.textContent = 'Login';
       authLink.href = './login.html';
       authLink.onclick = null;
+      
+      // Hide both Teacher Dashboard and Profile when not logged in
+      if (teacherDashboardNavItem) {
+        teacherDashboardNavItem.style.display = 'none';
+      }
+      
+      if (profileNavItem) {
+        profileNavItem.style.display = 'none';
+      }
     }
   }
 }
+
+// Make auth functions globally available
+window.Auth = {
+  isLoggedIn,
+  getCurrentUser,
+  setCurrentUser,
+  logout,
+  findUserById,
+  getAllStudents,
+  updateNavbar
+};
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', updateNavbar);

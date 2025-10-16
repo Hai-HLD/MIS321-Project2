@@ -6,13 +6,13 @@ async function displayCurrentUserProfile() {
   const notLoggedInMessage = document.getElementById('notLoggedInMessage');
   
   // Check if user is logged in
-  if (!isLoggedIn()) {
+  if (!window.Auth.isLoggedIn()) {
     profileDisplay.style.display = 'none';
     notLoggedInMessage.style.display = 'block';
     return;
   }
   
-  const currentUser = getCurrentUser();
+  const currentUser = window.Auth.getCurrentUser();
   
   // Only students have profiles for now
   if (currentUser.type !== 'student') {
@@ -28,7 +28,7 @@ async function displayCurrentUserProfile() {
   try {
     // Fetch fresh data from API
     const userId = currentUser.StudentID;
-    const user = await findUserById(userId);
+    const user = await window.Auth.findUserById(userId);
     
     if (!user) {
       notLoggedInMessage.style.display = 'block';

@@ -56,6 +56,19 @@ namespace MinigamesAPI.Controllers
                     };
 
                     _context.Students.Add(student);
+                    
+                    // Create initial student scores record
+                    var studentScores = new StudentScores
+                    {
+                        StudentID = request.UserId,
+                        Game1Score = 0,
+                        Game2Score = 0,
+                        Game3Score = 0,
+                        Game4Score = 0,
+                        Game5Score = 0
+                    };
+                    
+                    _context.StudentScores.Add(studentScores);
                     await _context.SaveChangesAsync();
 
                     return Ok(new UserResponse
@@ -63,11 +76,11 @@ namespace MinigamesAPI.Controllers
                         UserId = student.StudentID,
                         Name = student.StudentName,
                         UserType = "student",
-                        ScoreGame1 = student.StudentScoreGame1,
-                        ScoreGame2 = student.StudentScoreGame2,
-                        ScoreGame3 = student.StudentScoreGame3,
-                        ScoreGame4 = student.StudentScoreGame4,
-                        ScoreGame5 = student.StudentScoreGame5
+                        ScoreGame1 = studentScores.Game1Score,
+                        ScoreGame2 = studentScores.Game2Score,
+                        ScoreGame3 = studentScores.Game3Score,
+                        ScoreGame4 = studentScores.Game4Score,
+                        ScoreGame5 = studentScores.Game5Score
                     });
                 }
                 else // teacher
@@ -123,10 +136,29 @@ namespace MinigamesAPI.Controllers
 
                 if (request.UserType == "student")
                 {
-                    var student = await _context.Students.FindAsync(request.UserId);
+                    var student = await _context.Students
+                        .Include(s => s.StudentScores)
+                        .FirstOrDefaultAsync(s => s.StudentID == request.UserId);
+                    
                     if (student == null || !BCrypt.Net.BCrypt.Verify(request.Password, student.StudentPassword))
                     {
                         return Unauthorized(new { message = "Invalid credentials." });
+                    }
+
+                    // Ensure student has a StudentScores record
+                    if (student.StudentScores == null)
+                    {
+                        student.StudentScores = new StudentScores
+                        {
+                            StudentID = student.StudentID,
+                            Game1Score = 0,
+                            Game2Score = 0,
+                            Game3Score = 0,
+                            Game4Score = 0,
+                            Game5Score = 0
+                        };
+                        _context.StudentScores.Add(student.StudentScores);
+                        await _context.SaveChangesAsync();
                     }
 
                     return Ok(new UserResponse
@@ -134,11 +166,11 @@ namespace MinigamesAPI.Controllers
                         UserId = student.StudentID,
                         Name = student.StudentName,
                         UserType = "student",
-                        ScoreGame1 = student.StudentScoreGame1,
-                        ScoreGame2 = student.StudentScoreGame2,
-                        ScoreGame3 = student.StudentScoreGame3,
-                        ScoreGame4 = student.StudentScoreGame4,
-                        ScoreGame5 = student.StudentScoreGame5
+                        ScoreGame1 = student.StudentScores.Game1Score,
+                        ScoreGame2 = student.StudentScores.Game2Score,
+                        ScoreGame3 = student.StudentScores.Game3Score,
+                        ScoreGame4 = student.StudentScores.Game4Score,
+                        ScoreGame5 = student.StudentScores.Game5Score
                     });
                 }
                 else // teacher
@@ -159,8 +191,66 @@ namespace MinigamesAPI.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error during login");
-                return StatusCode(500, new { message = "An error occurred during login." });
+                _logger.LogError(ex, "Error during login: {Message}", ex.Message);
+                return StatusCode(500, new { 
+                    message = "An error occurred during login.", 
+                    error = ex.Message,
+                    stackTrace = ex.StackTrace
+                });
+            }
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<ActionResult> ResetPassword([FromBody] ResetPasswordRequest request)
+        {
+            try
+            {
+                // Validate input
+                if (string.IsNullOrWhiteSpace(request.UserId) ||
+                    string.IsNullOrWhiteSpace(request.NewPassword) ||
+                    string.IsNullOrWhiteSpace(request.UserType))
+                {
+                    return BadRequest(new { message = "User ID, new password, and user type are required." });
+                }
+
+                if (request.UserType != "student" && request.UserType != "teacher")
+                {
+                    return BadRequest(new { message = "Invalid user type. Must be 'student' or 'teacher'." });
+                }
+
+                if (request.UserType == "student")
+                {
+                    var student = await _context.Students.FindAsync(request.UserId);
+                    if (student == null)
+                    {
+                        return NotFound(new { message = "Student with this ID was not found." });
+                    }
+
+                    // Update password with new hash
+                    student.StudentPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new { message = "Password reset successfully for student." });
+                }
+                else // teacher
+                {
+                    var teacher = await _context.Teachers.FindAsync(request.UserId);
+                    if (teacher == null)
+                    {
+                        return NotFound(new { message = "Teacher with this ID was not found." });
+                    }
+
+                    // Update password with new hash
+                    teacher.TeacherPassword = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(new { message = "Password reset successfully for teacher." });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error during password reset");
+                return StatusCode(500, new { message = "An error occurred during password reset." });
             }
         }
     }

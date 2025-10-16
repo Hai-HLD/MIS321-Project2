@@ -43,11 +43,14 @@
             <li class="nav-item">
               <a class="nav-link" href="./ranking.html">Rankings</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./profile.html">Profile</a>
+            <li class="nav-item" id="profileNavItem" style="display: none;">
+              <a class="nav-link" href="./profile.html" id="profileLink">Profile</a>
+            </li>
+            <li class="nav-item" id="teacherDashboardNavItem" style="display: none;">
+              <a class="nav-link" href="./teacher-dashboard.html" id="teacherDashboardLink">Teacher Dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link active" href="./login.html">Login</a>
+              <a class="nav-link active" href="./login.html" id="authLink">Login</a>
             </li>
           </ul>
         </div>
@@ -100,6 +103,11 @@
                     </div>
                     <div class="d-grid">
                       <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                    <div class="text-center mt-3">
+                      <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#resetPasswordModal">
+                        Forgot Password?
+                      </a>
                     </div>
                     <div id="loginMessage" class="mt-3"></div>
                   </form>
@@ -163,6 +171,67 @@
       integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
       crossorigin="anonymous"
     ></script>
+
+    <!-- Password Reset Modal -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="resetPasswordForm">
+              <div class="mb-3">
+                <label for="resetUserType" class="form-label">Account Type</label>
+                <div class="btn-group w-100" role="group" aria-label="User type selection">
+                  <input type="radio" class="btn-check" name="resetUserType" id="resetStudentType" value="student" checked>
+                  <label class="btn btn-outline-primary" for="resetStudentType">Student</label>
+                  
+                  <input type="radio" class="btn-check" name="resetUserType" id="resetTeacherType" value="teacher">
+                  <label class="btn btn-outline-primary" for="resetTeacherType">Teacher</label>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="resetUserId" class="form-label" id="resetUserIdLabel">Student ID</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="resetUserId"
+                  placeholder="Enter your ID"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="resetNewPassword" class="form-label">New Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="resetNewPassword"
+                  placeholder="Enter new password"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="resetConfirmPassword" class="form-label">Confirm New Password</label>
+                <input
+                  type="password"
+                  class="form-control"
+                  id="resetConfirmPassword"
+                  placeholder="Confirm new password"
+                  required
+                />
+              </div>
+              <div id="resetPasswordMessage" class="mb-3"></div>
+              <div class="d-grid gap-2">
+                <button type="submit" class="btn btn-warning">Reset Password</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- Custom JS -->
     <script src="../scripts/main.js"></script>

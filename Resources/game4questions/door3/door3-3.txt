@@ -1,0 +1,5 @@
+Door 3 is the correct choice.
+Note: 1 door tells the truth, 2 doors lie
+Door1: Door 3 is the way forward
+Door2: Door 1 is the way forward
+Door3: I am the way forward

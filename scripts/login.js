@@ -35,21 +35,7 @@ function findUser(userId, userType) {
   return users.find(user => user.userId === userId && user.userType === userType);
 }
 
-// Set current user
-function setCurrentUser(user) {
-  localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
-}
-
-// Get current user
-function getCurrentUser() {
-  const user = localStorage.getItem(CURRENT_USER_KEY);
-  return user ? JSON.parse(user) : null;
-}
-
-// Check if logged in
-function isLoggedIn() {
-  return getCurrentUser() !== null;
-}
+// Use global Auth functions directly - no need to redeclare them
 
 // Update labels based on user type
 function updateUserTypeLabels() {
@@ -74,7 +60,7 @@ document.querySelectorAll('input[name="userType"]').forEach(radio => {
 });
 
 // Handle login form submission
-document.getElementById('loginForm').addEventListener('submit', (e) => {
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   
   const id = document.getElementById('loginId').value.trim();
@@ -83,41 +69,58 @@ document.getElementById('loginForm').addEventListener('submit', (e) => {
   
   messageDiv.innerHTML = '<div class="alert alert-info">Logging in...</div>';
   
-  // Find user in local storage
-  const user = findUser(id, currentUserType);
-  
-  if (user && user.password === password) {
-    // Login successful
-    const userData = {
-      type: user.userType,
-      userId: user.userId,
-      name: user.name,
-      StudentID: user.userId,
-      StudentName: user.name,
-      TeacherID: user.userId,
-      TeacherName: user.name,
-      StudentScoreGame1: user.scoreGame1 || 0,
-      StudentScoreGame2: user.scoreGame2 || 0,
-      StudentScoreGame3: user.scoreGame3 || 0,
-      StudentScoreGame4: user.scoreGame4 || 0,
-      StudentScoreGame5: user.scoreGame5 || 0
-    };
-    setCurrentUser(userData);
-    messageDiv.innerHTML = '<div class="alert alert-success">Login successful! Redirecting...</div>';
-    setTimeout(() => {
-      if (currentUserType === 'teacher') {
-        window.location.href = './teacher-dashboard.html';
-      } else {
-        window.location.href = './profile.html';
-      }
-    }, 1000);
-  } else {
-    messageDiv.innerHTML = '<div class="alert alert-danger">Invalid credentials. Please check your ID and password.</div>';
+  try {
+    // Call API to login
+    const response = await fetch('http://localhost:5000/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: id,
+        password: password,
+        userType: currentUserType
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (response.ok) {
+      // Login successful
+      const userData = {
+        type: result.userType,
+        userId: result.userId,
+        name: result.name,
+        StudentID: result.userId,
+        StudentName: result.name,
+        TeacherID: result.userId,
+        TeacherName: result.name,
+        StudentScoreGame1: result.scoreGame1 || 0,
+        StudentScoreGame2: result.scoreGame2 || 0,
+        StudentScoreGame3: result.scoreGame3 || 0,
+        StudentScoreGame4: result.scoreGame4 || 0,
+        StudentScoreGame5: result.scoreGame5 || 0
+      };
+      window.Auth.setCurrentUser(userData);
+      messageDiv.innerHTML = '<div class="alert alert-success">Login successful! Redirecting...</div>';
+      setTimeout(() => {
+        if (currentUserType === 'teacher') {
+          window.location.href = './teacher-dashboard.html';
+        } else {
+          window.location.href = './profile.html';
+        }
+      }, 1000);
+    } else {
+      messageDiv.innerHTML = `<div class="alert alert-danger">${result.message || 'Login failed. Please check your credentials.'}</div>`;
+    }
+  } catch (error) {
+    console.error('Login error:', error);
+    messageDiv.innerHTML = '<div class="alert alert-danger">Unable to connect to server. Please make sure the API is running.</div>';
   }
 });
 
 // Handle signup form submission
-document.getElementById('signupForm').addEventListener('submit', (e) => {
+document.getElementById('signupForm').addEventListener('submit', async (e) => {
   e.preventDefault();
   
   const name = document.getElementById('signupName').value.trim();
@@ -127,69 +130,161 @@ document.getElementById('signupForm').addEventListener('submit', (e) => {
   
   messageDiv.innerHTML = '<div class="alert alert-info">Creating account...</div>';
   
-  // Check if user already exists
-  const existingUser = findUser(id, currentUserType);
-  
-  if (existingUser) {
-    messageDiv.innerHTML = '<div class="alert alert-danger">User with this ID already exists. Please choose a different ID.</div>';
-    return;
-  }
-  
   if (!name || !id || !password) {
     messageDiv.innerHTML = '<div class="alert alert-danger">Please fill in all fields.</div>';
     return;
   }
   
-  // Create new user
-  const newUser = {
-    userId: id,
-    name: name,
-    password: password,
-    userType: currentUserType,
-    scoreGame1: 0,
-    scoreGame2: 0,
-    scoreGame3: 0,
-    scoreGame4: 0,
-    scoreGame5: 0,
-    createdAt: new Date().toISOString()
-  };
-  
-  addUser(newUser);
-  
-  // Set as current user
-  const userData = {
-    type: newUser.userType,
-    userId: newUser.userId,
-    name: newUser.name,
-    StudentID: newUser.userId,
-    StudentName: newUser.name,
-    TeacherID: newUser.userId,
-    TeacherName: newUser.name,
-    StudentScoreGame1: newUser.scoreGame1,
-    StudentScoreGame2: newUser.scoreGame2,
-    StudentScoreGame3: newUser.scoreGame3,
-    StudentScoreGame4: newUser.scoreGame4,
-    StudentScoreGame5: newUser.scoreGame5
-  };
-  
-  setCurrentUser(userData);
-  messageDiv.innerHTML = '<div class="alert alert-success">Account created successfully! Redirecting...</div>';
-  setTimeout(() => {
-    if (currentUserType === 'teacher') {
-      window.location.href = './teacher-dashboard.html';
+  try {
+    // Call API to register
+    const response = await fetch('http://localhost:5000/api/auth/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userId: id,
+        name: name,
+        password: password,
+        userType: currentUserType
+      })
+    });
+    
+    const result = await response.json();
+    
+    if (response.ok) {
+      // Registration successful
+      const userData = {
+        type: result.userType,
+        userId: result.userId,
+        name: result.name,
+        StudentID: result.userId,
+        StudentName: result.name,
+        TeacherID: result.userId,
+        TeacherName: result.name,
+        StudentScoreGame1: result.scoreGame1 || 0,
+        StudentScoreGame2: result.scoreGame2 || 0,
+        StudentScoreGame3: result.scoreGame3 || 0,
+        StudentScoreGame4: result.scoreGame4 || 0,
+        StudentScoreGame5: result.scoreGame5 || 0
+      };
+      
+      window.Auth.setCurrentUser(userData);
+      messageDiv.innerHTML = '<div class="alert alert-success">Account created successfully! Redirecting...</div>';
+      setTimeout(() => {
+        if (currentUserType === 'teacher') {
+          window.location.href = './teacher-dashboard.html';
+        } else {
+          window.location.href = './profile.html';
+        }
+      }, 1000);
     } else {
-      window.location.href = './profile.html';
+      messageDiv.innerHTML = `<div class="alert alert-danger">${result.message || 'Registration failed.'}</div>`;
     }
-  }, 1000);
+  } catch (error) {
+    console.error('Registration error:', error);
+    messageDiv.innerHTML = '<div class="alert alert-danger">Unable to connect to server. Please make sure the API is running.</div>';
+  }
 });
 
 // Initialize storage and labels
 initUsersStorage();
 updateUserTypeLabels();
 
+// Password reset functionality
+let resetUserType = 'student';
+
+// Update reset form labels based on user type
+function updateResetUserTypeLabels() {
+  const resetUserIdLabel = document.getElementById('resetUserIdLabel');
+  
+  if (resetUserType === 'student') {
+    resetUserIdLabel.textContent = 'Student ID';
+  } else {
+    resetUserIdLabel.textContent = 'Teacher ID';
+  }
+}
+
+// Handle reset user type change
+document.addEventListener('DOMContentLoaded', () => {
+  // Handle reset form user type changes
+  document.querySelectorAll('input[name="resetUserType"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      resetUserType = e.target.value;
+      updateResetUserTypeLabels();
+    });
+  });
+});
+
+// Handle password reset form submission
+document.addEventListener('DOMContentLoaded', () => {
+  const resetForm = document.getElementById('resetPasswordForm');
+  if (resetForm) {
+    resetForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const userId = document.getElementById('resetUserId').value.trim();
+      const newPassword = document.getElementById('resetNewPassword').value;
+      const confirmPassword = document.getElementById('resetConfirmPassword').value;
+      const messageDiv = document.getElementById('resetPasswordMessage');
+      
+      // Validate inputs
+      if (!userId || !newPassword || !confirmPassword) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">All fields are required.</div>';
+        return;
+      }
+      
+      if (newPassword !== confirmPassword) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Passwords do not match.</div>';
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Password must be at least 6 characters long.</div>';
+        return;
+      }
+      
+      messageDiv.innerHTML = '<div class="alert alert-info">Resetting password...</div>';
+      
+      try {
+        const response = await fetch('http://localhost:5000/api/auth/reset-password', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: userId,
+            newPassword: newPassword,
+            userType: resetUserType
+          })
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          messageDiv.innerHTML = '<div class="alert alert-success">Password reset successfully! You can now login with your new password.</div>';
+          
+          // Clear form and close modal after 2 seconds
+          setTimeout(() => {
+            document.getElementById('resetPasswordForm').reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('resetPasswordModal'));
+            modal.hide();
+            messageDiv.innerHTML = '';
+          }, 2000);
+        } else {
+          messageDiv.innerHTML = `<div class="alert alert-danger">${result.message || 'Password reset failed.'}</div>`;
+        }
+      } catch (error) {
+        console.error('Error resetting password:', error);
+        messageDiv.innerHTML = '<div class="alert alert-danger">Unable to connect to server. Please try again later.</div>';
+      }
+    });
+  }
+});
+
 // Check if already logged in - automatically redirect
-if (isLoggedIn()) {
-  const user = getCurrentUser();
+if (window.Auth.isLoggedIn()) {
+  const user = window.Auth.getCurrentUser();
   if (user && user.type === 'teacher') {
     window.location.href = './teacher-dashboard.html';
   } else {
