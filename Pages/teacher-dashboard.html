@@ -212,6 +212,24 @@
         </div>
       </div>
 
+      <!-- Class Code Section -->
+      <div class="row mb-4" id="classCodeSection" style="display: none;">
+        <div class="col-12">
+          <div class="alert alert-info">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h6 class="mb-1">📚 Your Class Code</h6>
+                <p class="mb-0">Share this code with your students so they can join your class:</p>
+              </div>
+              <div class="text-end">
+                <h4 class="mb-0 text-primary" id="classCodeDisplay">ABC123</h4>
+                <button class="btn btn-sm btn-outline-primary mt-2" onclick="copyClassCode()">📋 Copy Code</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Charts Row -->
       <div class="row mb-4">
         <div class="col-lg-8">
@@ -444,8 +462,19 @@
           // Get all users from localStorage
           const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
           
-          // Filter for students only
-          const studentUsers = allUsers.filter(user => user.userType === 'student');
+          // Get current teacher
+          const currentUser = JSON.parse(localStorage.getItem('bridgeEd_currentUser') || '{}');
+          
+          // Filter for students only (either all students or students in this teacher's class)
+          const studentUsers = allUsers.filter(user => {
+            if (user.userType !== 'student') return false;
+            // If teacher is logged in, only show their students
+            if (currentUser.type === 'teacher') {
+              return user.teacherId === currentUser.userId;
+            }
+            // If not a teacher, show all students (for testing)
+            return true;
+          });
           
           // Convert to dashboard format
           students = studentUsers.map((user, index) => {
@@ -505,14 +534,14 @@
             };
           });
           
-          // If no real students found, show sample data
+          // If no real students found, show empty state
           if (students.length === 0) {
-            students = getSampleData();
+            students = [];
           }
           
         } catch (error) {
           console.error('Error loading student data:', error);
-          students = getSampleData();
+          students = [];
         }
       }
 
@@ -539,33 +568,6 @@
         return 'Over a week ago';
       }
 
-      // Sample data fallback
-      function getSampleData() {
-        return [
-          { 
-            id: 1, name: "Alice Johnson", email: "alice@school.edu", level: "excellent", score: 95, 
-            gamesCompleted: 4, lastActive: "2 hours ago", progress: 95,
-            gameCompletions: [
-              { game: "Math Challenge", completed: true, score: 95, date: "2024-01-15" },
-              { game: "Science Lab", completed: true, score: 88, date: "2024-01-16" },
-              { game: "Robot Beeper Challenge", completed: true, score: 92, date: "2024-01-17" },
-              { game: "Labyrinth of Lies", completed: true, score: 100, date: "2024-01-18" },
-              { game: "History Timeline", completed: false, score: 0, date: null }
-            ]
-          },
-          { 
-            id: 2, name: "Bob Smith", email: "bob@school.edu", level: "good", score: 78, 
-            gamesCompleted: 3, lastActive: "1 day ago", progress: 78,
-            gameCompletions: [
-              { game: "Math Challenge", completed: true, score: 75, date: "2024-01-14" },
-              { game: "Science Lab", completed: true, score: 82, date: "2024-01-15" },
-              { game: "Robot Beeper Challenge", completed: true, score: 77, date: "2024-01-16" },
-              { game: "Labyrinth of Lies", completed: false, score: 0, date: null },
-              { game: "History Timeline", completed: false, score: 0, date: null }
-            ]
-          }
-        ];
-      }
 
       let currentFilter = 'all';
       let searchTerm = '';
@@ -584,6 +586,21 @@
       function personalizeDashboard() {
         // Get current user from localStorage
         const currentUser = JSON.parse(localStorage.getItem('bridgeEd_currentUser') || '{}');
+        
+        // Show class code section for teachers
+        if (currentUser.type === 'teacher') {
+          const classCodeSection = document.getElementById('classCodeSection');
+          const classCodeDisplay = document.getElementById('classCodeDisplay');
+          
+          // Get teacher's class code from localStorage
+          const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
+          const teacher = allUsers.find(user => user.userId === currentUser.userId && user.userType === 'teacher');
+          
+          if (teacher && teacher.classCode) {
+            classCodeDisplay.textContent = teacher.classCode;
+            classCodeSection.style.display = 'block';
+          }
+        }
         
         if (currentUser.name) {
           // Update page title
@@ -628,15 +645,51 @@
 
         // Apply search filter
         if (searchTerm) {
+          console.log('Filtering students with search term:', searchTerm);
+          const searchLower = searchTerm.toLowerCase();
           filteredStudents = filteredStudents.filter(s => 
-            s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            s.email.toLowerCase().includes(searchTerm.toLowerCase())
+            s.name.toLowerCase().includes(searchLower) ||
+            s.email.toLowerCase().includes(searchLower) ||
+            s.id.toString().toLowerCase().includes(searchLower)
           );
+          console.log('Filtered students count:', filteredStudents.length);
         }
 
         // Apply level filter
         if (currentFilter !== 'all') {
           filteredStudents = filteredStudents.filter(s => s.level === currentFilter);
+        }
+
+        // Show empty state if no students
+        if (filteredStudents.length === 0) {
+          if (students.length === 0) {
+            container.innerHTML = `
+              <div class="text-center py-5">
+                <div class="mb-4">
+                  <i class="fas fa-users fa-3x text-muted"></i>
+                </div>
+                <h5 class="text-muted">No Students Yet</h5>
+                <p class="text-muted">Add your first student to get started!</p>
+                <button class="btn btn-primary" onclick="showAddStudentModal()">
+                  <i class="fas fa-plus"></i> Add First Student
+                </button>
+              </div>
+            `;
+          } else {
+            container.innerHTML = `
+              <div class="text-center py-5">
+                <div class="mb-4">
+                  <i class="fas fa-search fa-3x text-muted"></i>
+                </div>
+                <h5 class="text-muted">No Students Found</h5>
+                <p class="text-muted">Try adjusting your search or filter criteria.</p>
+                <button class="btn btn-outline-primary" onclick="document.getElementById('searchInput').value=''; currentFilter='all'; renderStudents();">
+                  <i class="fas fa-refresh"></i> Clear Filters
+                </button>
+              </div>
+            `;
+          }
+          return;
         }
 
         container.innerHTML = filteredStudents.map(student => `
@@ -754,10 +807,16 @@
 
       function setupEventListeners() {
         // Search functionality
-        document.getElementById('studentSearch').addEventListener('input', (e) => {
-          searchTerm = e.target.value;
-          renderStudents();
-        });
+        const searchInput = document.getElementById('studentSearch');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            searchTerm = e.target.value;
+            console.log('Search term:', searchTerm); // Debug log
+            renderStudents();
+          });
+        } else {
+          console.error('Search input not found!');
+        }
 
         // Filter tabs
         document.querySelectorAll('.filter-tab').forEach(tab => {
@@ -765,6 +824,7 @@
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             e.target.classList.add('active');
             currentFilter = e.target.dataset.filter;
+            console.log('Filter changed to:', currentFilter); // Debug log
             renderStudents();
           });
         });
@@ -931,12 +991,38 @@
         alert('🔄 Refreshing data...\n\nThis would fetch the latest student progress from the server.');
       }
 
+      function copyClassCode() {
+        const classCodeDisplay = document.getElementById('classCodeDisplay');
+        const classCode = classCodeDisplay.textContent;
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(classCode).then(() => {
+          // Show success message
+          const button = event.target;
+          const originalText = button.textContent;
+          button.textContent = '✅ Copied!';
+          button.classList.remove('btn-outline-primary');
+          button.classList.add('btn-success');
+          
+          // Reset after 2 seconds
+          setTimeout(() => {
+            button.textContent = originalText;
+            button.classList.remove('btn-success');
+            button.classList.add('btn-outline-primary');
+          }, 2000);
+        }).catch(err => {
+          console.error('Failed to copy class code:', err);
+          alert('Failed to copy class code. Please copy manually: ' + classCode);
+        });
+      }
+
       // Initialize on page load
       document.addEventListener('DOMContentLoaded', initDashboard);
 
-      // Auth check
-      if (window.Auth) {
-        Auth.requireAuth('./login.html');
+      // Check if user is logged in and redirect if not
+      const currentUser = JSON.parse(localStorage.getItem('bridgeEd_currentUser') || '{}');
+      if (!currentUser.userId || currentUser.type !== 'teacher') {
+        window.location.href = './login.html';
       }
     </script>
   </body>

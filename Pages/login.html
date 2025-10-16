@@ -152,6 +152,26 @@
                         required
                       />
                     </div>
+                    <div class="mb-3" id="classCodeField">
+                      <label for="classCode" class="form-label" id="classCodeLabel">Class Code</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="classCode"
+                        placeholder="Enter your teacher's class code"
+                      />
+                      <div class="form-text" id="classCodeHelp">Ask your teacher for the class code to join their class</div>
+                    </div>
+                    <div class="mb-3" id="teacherClassCodeField" style="display: none;">
+                      <label for="teacherClassCode" class="form-label">Create Your Class Code</label>
+                      <input
+                        type="text"
+                        class="form-control"
+                        id="teacherClassCode"
+                        placeholder="Enter your desired class code"
+                      />
+                      <div class="form-text">Choose a class code to share with your students</div>
+                    </div>
                     <div class="d-grid">
                       <button type="submit" class="btn btn-success">Create Account</button>
                     </div>
@@ -232,6 +252,55 @@
         </div>
       </div>
     </div>
+
+    <!-- Password Reset Modal -->
+    <div class="modal fade" id="resetPasswordModal" tabindex="-1" aria-labelledby="resetPasswordModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="resetPasswordModalLabel">Reset Password</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="resetPasswordForm">
+              <div class="mb-3">
+                <div class="btn-group w-100" role="group" aria-label="User type selection">
+                  <input type="radio" class="btn-check" name="resetUserType" id="resetStudentType" value="student" checked>
+                  <label class="btn btn-outline-primary" for="resetStudentType">Student</label>
+                  
+                  <input type="radio" class="btn-check" name="resetUserType" id="resetTeacherType" value="teacher">
+                  <label class="btn btn-outline-primary" for="resetTeacherType">Teacher</label>
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="resetUserId" class="form-label" id="resetUserIdLabel">Student ID</label>
+                <input type="text" class="form-control" id="resetUserId" placeholder="Enter your ID" required>
+              </div>
+              <div class="mb-3">
+                <label for="resetNewPassword" class="form-label">New Password</label>
+                <input type="password" class="form-control" id="resetNewPassword" placeholder="Enter new password" required>
+              </div>
+              <div class="mb-3">
+                <label for="resetConfirmPassword" class="form-label">Confirm New Password</label>
+                <input type="password" class="form-control" id="resetConfirmPassword" placeholder="Confirm new password" required>
+              </div>
+              <div id="resetPasswordMessage"></div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" form="resetPasswordForm" class="btn btn-primary">Reset Password</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
 
     <!-- Custom JS -->
     <script src="../scripts/main.js"></script>

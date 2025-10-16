@@ -6,13 +6,12 @@ async function displayCurrentUserProfile() {
   const notLoggedInMessage = document.getElementById('notLoggedInMessage');
   
   // Check if user is logged in
-  if (!window.Auth.isLoggedIn()) {
+  const currentUser = JSON.parse(localStorage.getItem('bridgeEd_currentUser') || '{}');
+  if (!currentUser.userId) {
     profileDisplay.style.display = 'none';
     notLoggedInMessage.style.display = 'block';
     return;
   }
-  
-  const currentUser = window.Auth.getCurrentUser();
   
   // Only students have profiles for now
   if (currentUser.type !== 'student') {
