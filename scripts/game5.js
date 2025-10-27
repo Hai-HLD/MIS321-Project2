@@ -1,193 +1,187 @@
-// Game 1: Math Challenge - Algebra Questions Only
+// Game 5: Geometry Challenge - Ladder Climbing
 const API_BASE_URL = 'http://localhost:5000';
 
-// Question bank - 30 Algebra Questions
+// Question bank - 30 Geometry Questions
 const questions = [
   {
-    question: "Solve for x: 2x + 5 = 13",
-    options: ["x = 4", "x = 9", "x = 8", "x = 6"],
+    question: "What is the area of a rectangle with length 8 cm and width 5 cm?",
+    options: ["40 cm²", "13 cm²", "26 cm²", "80 cm²"],
     correct: 0,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "Solve for x: 3x - 7 = 14",
-    options: ["x = 5", "x = 7", "x = 21", "x = 3"],
+    question: "What is the perimeter of a square with side length 6 cm?",
+    options: ["12 cm", "24 cm", "36 cm", "18 cm"],
     correct: 1,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "Simplify: 4x + 3x - 2x",
-    options: ["9x", "5x", "x", "7x"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "What is the value of x if 5x = 35?",
-    options: ["5", "7", "8", "6"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "Solve for x: x/4 = 3",
-    options: ["7", "12", "16", "9"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "What is 2³?",
-    options: ["6", "8", "9", "4"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "Solve for x: 4x + 8 = 2x + 18",
-    options: ["x = 5", "x = 10", "x = 3", "x = 8"],
+    question: "In a right triangle, if one leg is 3 and the other leg is 4, what is the hypotenuse?",
+    options: ["5", "7", "6", "8"],
     correct: 0,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "If y = 2x + 3 and x = 4, what is y?",
-    options: ["11", "9", "7", "13"],
+    question: "What is the area of a triangle with base 10 cm and height 6 cm?",
+    options: ["60 cm²", "30 cm²", "16 cm²", "20 cm²"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the circumference of a circle with radius 7? (Use π ≈ 3.14)",
+    options: ["21.98", "43.96", "153.86", "14"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the sum of angles in a triangle?",
+    options: ["90°", "180°", "360°", "270°"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the area of a circle with radius 5? (Use π ≈ 3.14)",
+    options: ["31.4", "78.5", "15.7", "25"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "If two angles of a triangle are 45° and 65°, what is the third angle?",
+    options: ["70°", "80°", "60°", "90°"],
     correct: 0,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "Simplify: (3x)(4x)",
-    options: ["7x", "12x", "12x²", "7x²"],
+    question: "What is the perimeter of a rectangle with length 12 cm and width 5 cm?",
+    options: ["34 cm", "17 cm", "60 cm", "24 cm"],
+    correct: 0,
+    category: "Geometry"
+  },
+  {
+    question: "How many degrees in a right angle?",
+    options: ["45°", "90°", "180°", "360°"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the area of a square with side length 9?",
+    options: ["18", "36", "81", "27"],
     correct: 2,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "What is the value of x² when x = 5?",
-    options: ["10", "25", "15", "20"],
+    question: "In a parallelogram, opposite sides are:",
+    options: ["Equal and perpendicular", "Equal and parallel", "Different lengths", "Only equal"],
     correct: 1,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "Solve for x: 6x + 3 = 21",
-    options: ["x = 3", "x = 4", "x = 2", "x = 5"],
-    correct: 0,
-    category: "Algebra"
-  },
-  {
-    question: "What is 3⁴?",
-    options: ["12", "27", "64", "81"],
-    correct: 3,
-    category: "Algebra"
-  },
-  {
-    question: "Solve for x: 2x - 5 = 13",
-    options: ["x = 4", "x = 9", "x = 8", "x = 6"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "Simplify: 3x² + 2x²",
-    options: ["5x²", "6x²", "x⁴", "5x⁴"],
-    correct: 0,
-    category: "Algebra"
-  },
-  {
-    question: "What is the value of y if 2y + 10 = 24?",
-    options: ["5", "7", "8", "6"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "Solve for x: 5x = 40",
-    options: ["6", "7", "8", "9"],
-    correct: 2,
-    category: "Algebra"
-  },
-  {
-    question: "Simplify: (2x + 3) + (x - 2)",
-    options: ["3x + 1", "3x - 1", "2x + 1", "x + 5"],
-    correct: 0,
-    category: "Algebra"
-  },
-  {
-    question: "What is the value of 4²?",
-    options: ["8", "16", "12", "20"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "Solve for x: x + 7 = 15",
-    options: ["6", "7", "8", "9"],
-    correct: 2,
-    category: "Algebra"
-  },
-  {
-    question: "Simplify: 8x - 3x + 2x",
-    options: ["13x", "7x", "5x", "9x"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "What is the value of x if 3x + 4 = 19?",
-    options: ["4", "5", "6", "7"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "Solve for x: 7x - 10 = 25",
-    options: ["x = 3", "x = 4", "x = 5", "x = 6"],
-    correct: 2,
-    category: "Algebra"
-  },
-  {
-    question: "What is (-3)²?",
-    options: ["-9", "-6", "9", "6"],
-    correct: 2,
-    category: "Algebra"
-  },
-  {
-    question: "Simplify: 2(x + 5)",
-    options: ["2x + 5", "2x + 10", "x + 10", "3x + 5"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "Solve for x: 9x = 72",
-    options: ["7", "8", "9", "10"],
-    correct: 1,
-    category: "Algebra"
-  },
-  {
-    question: "What is the value of x³ when x = 3?",
+    question: "What is the volume of a cube with side length 3?",
     options: ["9", "18", "27", "12"],
     correct: 2,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "Solve for x: 6x + 4 = 28",
-    options: ["x = 3", "x = 4", "x = 5", "x = 6"],
+    question: "What is the area of a trapezoid with bases 5 and 9, and height 4?",
+    options: ["28", "18", "36", "56"],
+    correct: 0,
+    category: "Geometry"
+  },
+  {
+    question: "How many vertices does a cube have?",
+    options: ["6", "8", "10", "12"],
     correct: 1,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "Simplify: x² - 2x²",
-    options: ["-x²", "x²", "3x²", "-3x²"],
+    question: "What is the perimeter of an equilateral triangle with side 8?",
+    options: ["16", "24", "32", "21"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the area of a rhombus with diagonals 6 and 8?",
+    options: ["14", "24", "28", "48"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "How many sides does a hexagon have?",
+    options: ["5", "6", "7", "8"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the surface area of a rectangular prism with dimensions 3×4×5?",
+    options: ["94", "60", "47", "74"],
     correct: 0,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "What is the value of y if y/3 = 7?",
-    options: ["21", "10", "14", "24"],
+    question: "What is the diameter of a circle with radius 6?",
+    options: ["12", "18", "36", "6"],
     correct: 0,
-    category: "Algebra"
+    category: "Geometry"
   },
   {
-    question: "Solve for x: 10 - x = 3",
-    options: ["x = 5", "x = 6", "x = 7", "x = 8"],
-    correct: 2,
-    category: "Algebra"
+    question: "What is the area of a parallelogram with base 10 and height 7?",
+    options: ["17", "70", "34", "35"],
+    correct: 1,
+    category: "Geometry"
   },
   {
-    question: "Simplify: 5x + 2x - x",
-    options: ["8x", "7x", "6x", "4x"],
+    question: "How many degrees in an acute angle?",
+    options: ["Less than 90°", "Exactly 90°", "Greater than 90°", "180°"],
+    correct: 0,
+    category: "Geometry"
+  },
+  {
+    question: "What is the perimeter of a circle with radius 5? (Use π ≈ 3.14)",
+    options: ["31.4", "15.7", "78.5", "25"],
+    correct: 0,
+    category: "Geometry"
+  },
+  {
+    question: "What is the area of an isosceles triangle with base 8 and height 6?",
+    options: ["24", "48", "14", "20"],
+    correct: 0,
+    category: "Geometry"
+  },
+  {
+    question: "How many edges does a triangular prism have?",
+    options: ["6", "9", "12", "15"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the area of a sector of a circle with radius 10 and angle 60°?",
+    options: ["≈ 47", "≈ 52.4", "≈ 31.4", "≈ 62.8"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the area of a right triangle with legs 6 and 8?",
+    options: ["14", "24", "48", "28"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "How many diagonals does a pentagon have?",
+    options: ["3", "4", "5", "6"],
     correct: 2,
-    category: "Algebra"
+    category: "Geometry"
+  },
+  {
+    question: "What is the circumference of a circle with diameter 10? (Use π ≈ 3.14)",
+    options: ["15.7", "31.4", "78.5", "10"],
+    correct: 1,
+    category: "Geometry"
+  },
+  {
+    question: "What is the volume of a cylinder with radius 3 and height 5? (Use π ≈ 3.14)",
+    options: ["≈ 141.3", "≈ 47.1", "≈ 70.7", "≈ 94.2"],
+    correct: 0,
+    category: "Geometry"
   }
 ];
 
@@ -199,11 +193,10 @@ let timeLeft = 30;
 let timerInterval = null;
 let questionsAnswered = 0;
 
-// Road game state
-let chickenPosition = 0; // 0 = bottom lane, 5 = top lane
+// Ladder game state
+let ladderRung = 0; // 0 = bottom, 10 = top
 let incorrectAnswers = 0;
 let maxIncorrect = 3;
-let cars = []; // Array to store car positions and animations
 let gameWon = false;
 
 // Initialize game
@@ -214,10 +207,9 @@ function initGame() {
   score = 0;
   questionsAnswered = 0;
   
-  // Reset road game state
-  chickenPosition = 0;
+  // Reset ladder game state
+  ladderRung = 0;
   incorrectAnswers = 0;
-  cars = [];
   gameWon = false;
   
   // Set up quit button
@@ -246,8 +238,8 @@ function showStartScreen() {
       <div class="col-lg-8">
         <div class="card shadow-lg">
           <div class="card-body text-center p-4">
-            <h1 class="display-5 mb-3">🧮 Math Challenge - Algebra</h1>
-            <p class="lead mb-3">Test your algebra skills!</p>
+            <h1 class="display-5 mb-3">📐 Geometry Challenge</h1>
+            <p class="lead mb-3">Climb the ladder by answering geometry questions!</p>
             <div class="alert alert-info mb-3">
               <h6 class="mb-2">Game Rules:</h6>
               <div class="row text-start">
@@ -256,8 +248,8 @@ function showStartScreen() {
                   <small>✓ 30 seconds per question</small>
                 </div>
                 <div class="col-md-6">
-                  <small>✓ Each correct = 10 points</small><br>
-                  <small>✓ Try to get highest score!</small>
+                  <small>✓ Reach the top of the ladder!</small><br>
+                  <small>✓ 3 wrong answers = fall down</small>
                 </div>
               </div>
             </div>
@@ -282,10 +274,9 @@ function startGame() {
   score = 0;
   questionsAnswered = 0;
   
-  // Reset road game state
-  chickenPosition = 0;
+  // Reset ladder game state
+  ladderRung = 0;
   incorrectAnswers = 0;
-  cars = [];
   gameWon = false;
   
   // Show quit button when starting new game
@@ -316,7 +307,7 @@ function showQuestion() {
               <span class="badge bg-light text-primary">Question ${currentQuestionIndex + 1}/${selectedQuestions.length}</span>
               <span class="badge bg-warning text-dark" id="timer">Time: 30s</span>
               <span class="badge bg-light text-primary">Score: ${score}</span>
-              <span class="badge bg-danger text-white">Strikes: ${incorrectAnswers}/${maxIncorrect}</span>
+              <span class="badge bg-danger text-white">Wrong: ${incorrectAnswers}/${maxIncorrect}</span>
             </div>
           </div>
           <div class="card-body p-3">
@@ -325,19 +316,19 @@ function showQuestion() {
             </div>
             <h4 class="mb-3">${question.question}</h4>
             
-            <!-- Road Game Area -->
-            <div class="road-container mb-4">
-              <div class="road">
-                ${Array.from({length: 6}, (_, laneIndex) => `
-                  <div class="lane ${laneIndex === chickenPosition ? 'chicken-lane' : ''}" data-lane="${laneIndex}">
-                    <div class="lane-content">
-                      ${laneIndex === chickenPosition ? '<div class="chicken">🐔</div>' : ''}
-                      <div class="cars" id="cars-lane-${laneIndex}"></div>
+            <!-- Ladder Game Area -->
+            <div class="ladder-container mb-4">
+              <div class="ladder" id="ladder">
+                ${Array.from({length: 11}, (_, rungIndex) => {
+                  const isActive = rungIndex === ladderRung;
+                  return `
+                    <div class="ladder-rung ${isActive ? 'active' : ''}" data-rung="${10 - rungIndex}">
+                      <div class="rung-number">${10 - rungIndex}</div>
+                      ${isActive ? '<div class="climber">🧗</div>' : ''}
                     </div>
-                  </div>
-                `).join('')}
+                  `;
+                }).join('')}
               </div>
-              <div class="road-markings"></div>
             </div>
             
             <!-- Question Options -->
@@ -356,8 +347,6 @@ function showQuestion() {
     </div>
   `;
 
-  // Start car animations
-  startCarAnimations();
   startTimer();
 }
 
@@ -395,14 +384,14 @@ function updateTimerDisplay() {
 
 // Handle timeout
 function handleTimeout() {
-  // Move chicken back and increment strikes (same as wrong answer)
-  chickenPosition = Math.max(chickenPosition - 1, 0);
+  // Shake ladder and increment strikes (same as wrong answer)
+  shakeLadder();
   incorrectAnswers++;
   
   // Check if too many strikes
   if (incorrectAnswers >= maxIncorrect) {
-    // Game over - chicken got run over
-    showGameOverScreen('chicken-run-over');
+    // Game over - fall down ladder
+    fallDownLadder();
     return;
   }
   
@@ -421,28 +410,53 @@ function selectAnswer(selectedIndex) {
   
   if (isCorrect) {
     score += 10;
-    // Move chicken up
-    chickenPosition = Math.min(chickenPosition + 1, 5);
+    // Move up ladder
+    ladderRung = Math.min(ladderRung + 1, 10);
     
-    // Check if chicken reached the top (won the game)
-    if (chickenPosition === 5) {
+    // Check if reached the top (won the game)
+    if (ladderRung === 10) {
       gameWon = true;
     }
   } else {
-    // Move chicken back and increment strikes
-    chickenPosition = Math.max(chickenPosition - 1, 0);
+    // Shake ladder and increment strikes
+    shakeLadder();
     incorrectAnswers++;
     
     // Check if too many strikes
     if (incorrectAnswers >= maxIncorrect) {
-      // Game over - chicken got run over
-      showGameOverScreen('chicken-run-over');
+      // Game over - fall down ladder
+      fallDownLadder();
       return;
     }
   }
   
   questionsAnswered++;
   showFeedback(isCorrect, null, selectedIndex);
+}
+
+// Shake ladder animation
+function shakeLadder() {
+  const ladder = document.getElementById('ladder');
+  if (ladder) {
+    ladder.classList.add('shake');
+    setTimeout(() => {
+      ladder.classList.remove('shake');
+    }, 500);
+  }
+}
+
+// Fall down ladder animation
+function fallDownLadder() {
+  const ladder = document.getElementById('ladder');
+  if (ladder) {
+    ladder.classList.add('fall');
+    setTimeout(() => {
+      ladder.classList.remove('fall');
+      // Move player to bottom
+      ladderRung = 0;
+      showGameOverScreen('fallen');
+    }, 1000);
+  }
 }
 
 // Show feedback
@@ -559,7 +573,7 @@ async function endGame(quitGame = false) {
     message = 'You quit the game';
     badgeClass = 'bg-secondary';
   } else if (gameWon) {
-    message = '🐔 The chicken made it across! 🏆';
+    message = '🎯 You reached the top of the ladder! 🏆';
     badgeClass = 'bg-success';
   } else if (percentage >= 90) {
     message = 'Outstanding! 🏆';
@@ -645,7 +659,7 @@ async function saveScore(finalScore) {
     }
 
     // Save progress using the new system
-    const success = await window.GameProgress.saveGameProgress(1, finalScore);
+    const success = await window.GameProgress.saveGameProgress(5, finalScore);
     
     if (success) {
       messageDiv.innerHTML = `
@@ -666,55 +680,7 @@ async function saveScore(finalScore) {
   }
 }
 
-// Start car animations
-function startCarAnimations() {
-  // Clear existing cars
-  cars = [];
-  
-  // Create cars in random lanes
-  for (let i = 0; i < 3; i++) {
-    const lane = Math.floor(Math.random() * 6);
-    createCar(lane);
-  }
-  
-  // Add new cars periodically
-  setInterval(() => {
-    if (cars.length < 4) {
-      const lane = Math.floor(Math.random() * 6);
-      createCar(lane);
-    }
-  }, 3000);
-}
-
-// Create a car in a specific lane
-function createCar(lane) {
-  const carElement = document.createElement('div');
-  carElement.className = 'car';
-  carElement.innerHTML = '🚗';
-  carElement.style.cssText = `
-    position: absolute;
-    right: -50px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 24px;
-    animation: driveLeft 6s linear forwards;
-    z-index: 2;
-  `;
-  
-  const carsContainer = document.getElementById(`cars-lane-${lane}`);
-  if (carsContainer) {
-    carsContainer.appendChild(carElement);
-    
-    // Remove car after animation
-    setTimeout(() => {
-      if (carElement.parentNode) {
-        carElement.parentNode.removeChild(carElement);
-      }
-    }, 6000);
-  }
-}
-
-// Show game over screen for chicken run over
+// Show game over screen for falling down
 function showGameOverScreen(reason) {
   const app = document.getElementById('app');
   
@@ -731,11 +697,11 @@ function showGameOverScreen(reason) {
           <div class="card-body text-center p-4">
             <h1 class="display-5 mb-3">💥 Game Over!</h1>
             <div class="mb-3">
-              <span class="badge bg-danger fs-6 px-3 py-2">🐔 The chicken got run over!</span>
+              <span class="badge bg-danger fs-6 px-3 py-2">You fell down the ladder!</span>
             </div>
             <div class="alert alert-danger mb-3">
               <h6 class="mb-2">Too many wrong answers!</h6>
-              <p class="mb-0">The chicken couldn't make it across the road safely. Try again!</p>
+              <p class="mb-0">You lost your grip and fell down. Try again!</p>
             </div>
             <div class="row g-2 mb-3">
               <div class="col-md-4">

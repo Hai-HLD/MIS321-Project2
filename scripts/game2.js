@@ -365,6 +365,18 @@ function updateTimerDisplay() {
 
 // Handle timeout
 function handleTimeout() {
+  // Add crack and increment strikes (same as wrong answer)
+  crackCount++;
+  
+  // Check if flask breaks
+  if (crackCount >= maxCracks) {
+    isFlaskBroken = true;
+    // Show flask breaking animation
+    showFlaskBreaking();
+    return;
+  }
+  
+  questionsAnswered++;
   showFeedback(false, "Time's up!");
 }
 
