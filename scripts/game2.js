@@ -170,6 +170,13 @@ let timeLeft = 30;
 let timerInterval = null;
 let questionsAnswered = 0;
 
+// Flask game state
+let flaskFillLevel = 0; // 0-100% fill level
+let crackCount = 0; // 0-3 cracks
+let maxCracks = 3;
+let isFlaskBroken = false;
+let flaskCompleted = false;
+
 // Initialize game
 function initGame() {
   // Select 10 random questions
@@ -177,6 +184,18 @@ function initGame() {
   currentQuestionIndex = 0;
   score = 0;
   questionsAnswered = 0;
+  
+  // Reset flask game state
+  flaskFillLevel = 0;
+  crackCount = 0;
+  isFlaskBroken = false;
+  flaskCompleted = false;
+  
+  // Set up quit button
+  const quitBtn = document.getElementById('quitGameBtn');
+  if (quitBtn) {
+    quitBtn.addEventListener('click', quitGame);
+  }
   
   showStartScreen();
 }
@@ -197,24 +216,30 @@ function showStartScreen() {
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="card shadow-lg">
-          <div class="card-body text-center p-5">
-            <h1 class="display-4 mb-4">🔬 Science Lab</h1>
-            <p class="lead mb-4">Test your knowledge of biology, chemistry, physics, and earth science!</p>
-            <div class="alert alert-info">
-              <h5>Game Rules:</h5>
-              <ul class="list-unstyled mb-0">
-                <li>✓ Answer 10 questions</li>
-                <li>✓ 30 seconds per question</li>
-                <li>✓ Each correct answer = 10 points</li>
-                <li>✓ Questions cover multiple science topics</li>
-              </ul>
+          <div class="card-body text-center p-4">
+            <h1 class="display-5 mb-3">🔬 Science Lab</h1>
+            <p class="lead mb-3">Test your knowledge of biology, chemistry, physics, and earth science!</p>
+            <div class="alert alert-info mb-3">
+              <h6 class="mb-2">Game Rules:</h6>
+              <div class="row text-start">
+                <div class="col-md-6">
+                  <small>✓ Answer 10 questions</small><br>
+                  <small>✓ 30 seconds per question</small>
+                </div>
+                <div class="col-md-6">
+                  <small>✓ Each correct = 10 points</small><br>
+                  <small>✓ Multiple science topics</small>
+                </div>
+              </div>
             </div>
-            <button class="btn btn-success btn-lg mt-3" onclick="startGame()">
-              Start Game
-            </button>
-            <a href="./game.html" class="btn btn-outline-secondary btn-lg mt-3 ms-2">
-              Back to Games
-            </a>
+            <div class="d-grid gap-2">
+              <button class="btn btn-success" onclick="startGame()">
+                Start Game
+              </button>
+              <a href="./game.html" class="btn btn-outline-secondary">
+                Back to Games
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -227,12 +252,25 @@ function startGame() {
   currentQuestionIndex = 0;
   score = 0;
   questionsAnswered = 0;
+  
+  // Reset flask game state
+  flaskFillLevel = 0;
+  crackCount = 0;
+  isFlaskBroken = false;
+  flaskCompleted = false;
+  
+  // Show quit button when starting new game
+  const quitBtn = document.getElementById('quitGameBtn');
+  if (quitBtn) {
+    quitBtn.style.display = 'block';
+  }
+  
   showQuestion();
 }
 
 // Show question
 function showQuestion() {
-  if (currentQuestionIndex >= selectedQuestions.length) {
+  if (currentQuestionIndex >= selectedQuestions.length || flaskCompleted || isFlaskBroken) {
     endGame();
     return;
   }
@@ -242,23 +280,42 @@ function showQuestion() {
   
   app.innerHTML = `
     <div class="row justify-content-center">
-      <div class="col-lg-8">
+      <div class="col-lg-10">
         <div class="card shadow-lg">
           <div class="card-header bg-success text-white">
             <div class="d-flex justify-content-between align-items-center">
               <span class="badge bg-light text-success">Question ${currentQuestionIndex + 1}/10</span>
               <span class="badge bg-warning text-dark" id="timer">Time: 30s</span>
               <span class="badge bg-light text-success">Score: ${score}</span>
+              <span class="badge bg-danger text-white">Cracks: ${crackCount}/${maxCracks}</span>
             </div>
           </div>
-          <div class="card-body p-4">
-            <div class="mb-3">
+          <div class="card-body p-3">
+            <div class="mb-2">
               <span class="badge bg-info">${question.category}</span>
             </div>
-            <h3 class="mb-4">${question.question}</h3>
-            <div class="d-grid gap-3">
+            <h4 class="mb-3">${question.question}</h4>
+            
+            <!-- Flask Game Area -->
+            <div class="flask-container mb-4">
+              <div class="flask-wrapper">
+                <div class="erlenmeyer-flask ${isFlaskBroken ? 'broken' : ''}" id="flask">
+                  <div class="flask-liquid" style="height: ${flaskFillLevel}%" id="flask-liquid"></div>
+                  <div class="flask-cracks" id="flask-cracks">
+                    ${crackCount >= 1 ? '<div class="crack crack-1"></div>' : ''}
+                    ${crackCount >= 2 ? '<div class="crack crack-2"></div>' : ''}
+                    ${crackCount >= 3 ? '<div class="crack crack-3"></div>' : ''}
+                  </div>
+                  <div class="flask-label">Fill Level: ${flaskFillLevel}%</div>
+                </div>
+                <div class="flask-shards" id="flask-shards"></div>
+              </div>
+            </div>
+            
+            <!-- Question Options -->
+            <div class="d-grid gap-2">
               ${question.options.map((option, index) => `
-                <button class="btn btn-outline-success btn-lg text-start answer-btn" 
+                <button class="btn btn-outline-success text-start answer-btn" 
                         onclick="selectAnswer(${index})"
                         data-index="${index}">
                   ${String.fromCharCode(65 + index)}. ${option}
@@ -322,6 +379,24 @@ function selectAnswer(selectedIndex) {
   
   if (isCorrect) {
     score += 10;
+    // Fill flask by 10%
+    flaskFillLevel = Math.min(flaskFillLevel + 10, 100);
+    
+    // Check if flask is completed
+    if (flaskFillLevel === 100) {
+      flaskCompleted = true;
+    }
+  } else {
+    // Add crack and increment strikes
+    crackCount++;
+    
+    // Check if flask breaks
+    if (crackCount >= maxCracks) {
+      isFlaskBroken = true;
+      // Show flask breaking animation
+      showFlaskBreaking();
+      return;
+    }
   }
   
   questionsAnswered++;
@@ -347,27 +422,65 @@ function showFeedback(isCorrect, timeoutMessage = null, selectedIndex = null) {
     }
   });
 
-  // Show feedback message
-  const app = document.getElementById('app');
-  const feedbackDiv = document.createElement('div');
-  feedbackDiv.className = 'row justify-content-center mt-3';
-  feedbackDiv.innerHTML = `
-    <div class="col-lg-8">
-      <div class="alert ${isCorrect ? 'alert-success' : 'alert-danger'} alert-dismissible fade show">
-        <h5>${timeoutMessage || (isCorrect ? '✓ Correct!' : '✗ Incorrect')}</h5>
-        <p class="mb-0">
+  // Show feedback popup that covers the screen
+  const feedbackPopup = document.createElement('div');
+  feedbackPopup.id = 'feedbackPopup';
+  feedbackPopup.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+  `;
+  
+  feedbackPopup.innerHTML = `
+    <div class="card shadow-lg" style="max-width: 400px; width: 90%;">
+      <div class="card-body text-center p-4">
+        <div class="mb-3">
+          <i class="fas fa-${isCorrect ? 'check-circle text-success' : 'times-circle text-danger'}" style="font-size: 3rem;"></i>
+        </div>
+        <h3 class="mb-3 ${isCorrect ? 'text-success' : 'text-danger'}">
+          ${timeoutMessage || (isCorrect ? 'Correct!' : 'Incorrect')}
+        </h3>
+        <p class="mb-3">
           ${timeoutMessage ? 'The correct answer was: ' : (isCorrect ? 'Great job!' : 'The correct answer is: ')}
           <strong>${question.options[question.correct]}</strong>
         </p>
-      </div>
-      <div class="d-grid">
-        <button class="btn btn-success" onclick="nextQuestion()">
-          ${currentQuestionIndex < selectedQuestions.length - 1 ? 'Next Question' : 'See Results'}
-        </button>
+        <div class="progress mb-3" style="height: 6px;">
+          <div class="progress-bar ${isCorrect ? 'bg-success' : 'bg-danger'}" role="progressbar" style="width: 100%;" id="feedbackProgress"></div>
+        </div>
+        <small class="text-muted">Moving to next question...</small>
       </div>
     </div>
   `;
-  app.appendChild(feedbackDiv);
+  
+  document.body.appendChild(feedbackPopup);
+  
+  // Animate progress bar
+  const progressBar = document.getElementById('feedbackProgress');
+  progressBar.style.transition = 'width 1s linear';
+  progressBar.style.width = '0%';
+  
+  // Auto-advance after 1 second
+  setTimeout(() => {
+    // Remove feedback popup
+    const popup = document.getElementById('feedbackPopup');
+    if (popup) {
+      popup.remove();
+    }
+    
+    if (currentQuestionIndex < selectedQuestions.length - 1) {
+      nextQuestion();
+    } else {
+      endGame();
+    }
+  }, 1000);
 }
 
 // Next question
@@ -376,15 +489,37 @@ function nextQuestion() {
   showQuestion();
 }
 
+// Quit game
+function quitGame() {
+  if (timerInterval) {
+    clearInterval(timerInterval);
+  }
+  // End game without completing all questions
+  endGame(true);
+}
+
 // End game
-async function endGame() {
+async function endGame(quitGame = false) {
   const app = document.getElementById('app');
   
-  const percentage = (score / (selectedQuestions.length * 10)) * 100;
+  // Hide quit button when showing end screen
+  const quitBtn = document.getElementById('quitGameBtn');
+  if (quitBtn) {
+    quitBtn.style.display = 'none';
+  }
+  
+  const percentage = questionsAnswered > 0 ? (score / (questionsAnswered * 10)) * 100 : 0;
+  let title = quitGame ? 'Game Quit' : (flaskCompleted ? 'Experiment Success! 🎉' : 'Experiment Complete!');
   let message = '';
   let badgeClass = '';
   
-  if (percentage >= 90) {
+  if (quitGame) {
+    message = 'You quit the game';
+    badgeClass = 'bg-secondary';
+  } else if (flaskCompleted) {
+    message = '🧪 Flask filled successfully! 🏆';
+    badgeClass = 'bg-success';
+  } else if (percentage >= 90) {
     message = 'Science Master! 🏆';
     badgeClass = 'bg-success';
   } else if (percentage >= 70) {
@@ -402,43 +537,43 @@ async function endGame() {
     <div class="row justify-content-center">
       <div class="col-lg-8">
         <div class="card shadow-lg">
-          <div class="card-body text-center p-5">
-            <h1 class="display-4 mb-4">Experiment Complete!</h1>
-            <div class="mb-4">
-              <span class="badge ${badgeClass} fs-5 px-4 py-3">${message}</span>
+          <div class="card-body text-center p-4">
+            <h1 class="display-5 mb-3">${title}</h1>
+            <div class="mb-3">
+              <span class="badge ${badgeClass} fs-6 px-3 py-2">${message}</span>
             </div>
-            <div class="row g-3 mb-4">
+            <div class="row g-2 mb-3">
               <div class="col-md-4">
                 <div class="card bg-success text-white">
-                  <div class="card-body">
-                    <h3 class="display-6 mb-0">${score}</h3>
-                    <p class="mb-0">Total Score</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-4">
-                <div class="card bg-primary text-white">
-                  <div class="card-body">
-                    <h3 class="display-6 mb-0">${Math.round(percentage)}%</h3>
-                    <p class="mb-0">Accuracy</p>
+                  <div class="card-body py-2">
+                    <h4 class="mb-0">${score}</h4>
+                    <small>Total Score</small>
                   </div>
                 </div>
               </div>
               <div class="col-md-4">
                 <div class="card bg-info text-white">
-                  <div class="card-body">
-                    <h3 class="display-6 mb-0">${questionsAnswered}/10</h3>
-                    <p class="mb-0">Questions</p>
+                  <div class="card-body py-2">
+                    <h4 class="mb-0">${questionsAnswered > 0 ? Math.round(percentage) : 0}%</h4>
+                    <small>Accuracy</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-primary text-white">
+                  <div class="card-body py-2">
+                    <h4 class="mb-0">${questionsAnswered}/10</h4>
+                    <small>Questions</small>
                   </div>
                 </div>
               </div>
             </div>
-            <div id="saveScoreMessage" class="mb-3"></div>
+            <div id="saveScoreMessage" class="mb-2"></div>
             <div class="d-grid gap-2">
-              <button class="btn btn-success btn-lg" onclick="startGame()">
+              <button class="btn btn-success" onclick="startGame()">
                 Play Again
               </button>
-              <a href="./game.html" class="btn btn-outline-secondary btn-lg">
+              <a href="./game.html" class="btn btn-outline-secondary">
                 Back to Games
               </a>
             </div>
@@ -468,7 +603,7 @@ async function saveScore(finalScore) {
     }
 
     // Save progress using the new system
-    const success = window.GameProgress.saveGameProgress(2, finalScore);
+    const success = await window.GameProgress.saveGameProgress(2, finalScore);
     
     if (success) {
       messageDiv.innerHTML = `
@@ -487,6 +622,118 @@ async function saveScore(finalScore) {
       </div>
     `;
   }
+}
+
+// Show flask breaking animation
+function showFlaskBreaking() {
+  const flask = document.getElementById('flask');
+  const shardsContainer = document.getElementById('flask-shards');
+  
+  if (flask && shardsContainer) {
+    // Add broken class for visual effect
+    flask.classList.add('broken');
+    
+    // Create glass shards
+    for (let i = 0; i < 8; i++) {
+      const shard = document.createElement('div');
+      shard.className = 'glass-shard';
+      shard.style.cssText = `
+        position: absolute;
+        width: ${Math.random() * 20 + 10}px;
+        height: ${Math.random() * 20 + 10}px;
+        background: linear-gradient(45deg, rgba(255,255,255,0.8), rgba(200,200,200,0.6));
+        border-radius: 2px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        animation: shardFall ${Math.random() * 2 + 1}s ease-out forwards;
+        animation-delay: ${Math.random() * 0.5}s;
+      `;
+      
+      // Random direction for shard movement
+      const angle = (Math.PI * 2 * i) / 8;
+      const distance = Math.random() * 100 + 50;
+      const endX = Math.cos(angle) * distance;
+      const endY = Math.sin(angle) * distance;
+      
+      shard.style.setProperty('--end-x', `${endX}px`);
+      shard.style.setProperty('--end-y', `${endY}px`);
+      
+      shardsContainer.appendChild(shard);
+    }
+    
+    // Show game over screen after animation
+    setTimeout(() => {
+      showFlaskGameOverScreen();
+    }, 2000);
+  }
+}
+
+// Show game over screen for flask breaking
+function showFlaskGameOverScreen() {
+  const app = document.getElementById('app');
+  
+  // Hide quit button
+  const quitBtn = document.getElementById('quitGameBtn');
+  if (quitBtn) {
+    quitBtn.style.display = 'none';
+  }
+  
+  app.innerHTML = `
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-lg">
+          <div class="card-body text-center p-4">
+            <h1 class="display-5 mb-3">💥 Experiment Failed!</h1>
+            <div class="mb-3">
+              <span class="badge bg-danger fs-6 px-3 py-2">🧪 The flask shattered!</span>
+            </div>
+            <div class="alert alert-danger mb-3">
+              <h6 class="mb-2">Too many wrong answers!</h6>
+              <p class="mb-0">The flask couldn't handle the pressure and broke. Try again!</p>
+            </div>
+            <div class="row g-2 mb-3">
+              <div class="col-md-4">
+                <div class="card bg-success text-white">
+                  <div class="card-body py-2">
+                    <h4 class="mb-0">${score}</h4>
+                    <small>Total Score</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-danger text-white">
+                  <div class="card-body py-2">
+                    <h4 class="mb-0">${crackCount}</h4>
+                    <small>Cracks</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card bg-info text-white">
+                  <div class="card-body py-2">
+                    <h4 class="mb-0">${questionsAnswered}</h4>
+                    <small>Questions</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="d-grid gap-2">
+              <button class="btn btn-success" onclick="startGame()">
+                Try Again
+              </button>
+              <a href="./game.html" class="btn btn-outline-secondary">
+                Back to Games
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Save score even on game over
+  saveScore(score);
 }
 
 // Initialize game when page loads

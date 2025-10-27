@@ -26,9 +26,10 @@ function logout() {
 }
 
 // Find user by ID (API call)
-async function findUserById(userId) {
+async function findUserById(userId, userType = null) {
   try {
-    const response = await fetch(`${API_URL}/profile/${userId}`);
+    const url = userType ? `${API_URL}/profile/${userId}?userType=${userType}` : `${API_URL}/profile/${userId}`;
+    const response = await fetch(url);
     if (!response.ok) {
       return null;
     }
@@ -52,17 +53,37 @@ async function findUserById(userId) {
   }
 }
 
-// Get all students (API call)
-async function getAllStudents() {
+// Get all students for a teacher (API call)
+async function getStudentsByTeacher(teacherId) {
   try {
-    const response = await fetch(`${API_URL}/profile/students`);
+    const response = await fetch(`${API_URL}/studentprogress/teacher/${teacherId}`);
     if (!response.ok) {
       return [];
     }
     return await response.json();
   } catch (error) {
-    console.error('Error fetching students:', error);
+    console.error('Error fetching students for teacher:', error);
     return [];
+  }
+}
+
+// Assign student to teacher (API call)
+async function assignStudentToTeacher(studentId, teacherId) {
+  try {
+    const response = await fetch(`${API_URL}/studentprogress/assign`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        studentId: studentId,
+        teacherId: teacherId
+      })
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Error assigning student to teacher:', error);
+    return false;
   }
 }
 
@@ -116,6 +137,13 @@ function updateNavbar() {
   }
 }
 
+// Require authentication - redirect to login if not logged in
+function requireAuth(redirectTo = './login.html') {
+  if (!isLoggedIn()) {
+    window.location.replace(redirectTo);
+  }
+}
+
 // Make auth functions globally available
 window.Auth = {
   isLoggedIn,
@@ -123,8 +151,10 @@ window.Auth = {
   setCurrentUser,
   logout,
   findUserById,
-  getAllStudents,
-  updateNavbar
+  getStudentsByTeacher,
+  assignStudentToTeacher,
+  updateNavbar,
+  requireAuth
 };
 
 // Initialize on page load

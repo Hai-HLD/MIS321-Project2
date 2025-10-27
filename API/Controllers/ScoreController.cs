@@ -24,9 +24,13 @@ namespace MinigamesAPI.Controllers
         {
             try
             {
+                _logger.LogInformation("UpdateScore called for student {StudentId} with GameNumber {GameNumber} and Score {Score}", 
+                    studentId, request?.GameNumber, request?.Score);
+                
                 var student = await _context.Students.FindAsync(studentId);
                 if (student == null)
                 {
+                    _logger.LogWarning("Student {StudentId} not found", studentId);
                     return NotFound(new { message = "Student not found." });
                 }
 
@@ -58,32 +62,68 @@ namespace MinigamesAPI.Controllers
                     _context.StudentScores.Add(studentScores);
                 }
 
-                // Update the appropriate game score
+                // Update the appropriate game score only if new score is higher
+                bool scoreUpdated = false;
                 switch (request.GameNumber)
                 {
                     case 1:
-                        studentScores.Game1Score = request.Score;
+                        _logger.LogInformation("Game 1: Current score {CurrentScore}, New score {NewScore}", 
+                            studentScores.Game1Score, request.Score);
+                        if (request.Score > studentScores.Game1Score)
+                        {
+                            studentScores.Game1Score = request.Score;
+                            scoreUpdated = true;
+                        }
                         break;
                     case 2:
-                        studentScores.Game2Score = request.Score;
+                        _logger.LogInformation("Game 2: Current score {CurrentScore}, New score {NewScore}", 
+                            studentScores.Game2Score, request.Score);
+                        if (request.Score > studentScores.Game2Score)
+                        {
+                            studentScores.Game2Score = request.Score;
+                            scoreUpdated = true;
+                        }
                         break;
                     case 3:
-                        studentScores.Game3Score = request.Score;
+                        _logger.LogInformation("Game 3: Current score {CurrentScore}, New score {NewScore}", 
+                            studentScores.Game3Score, request.Score);
+                        if (request.Score > studentScores.Game3Score)
+                        {
+                            studentScores.Game3Score = request.Score;
+                            scoreUpdated = true;
+                        }
                         break;
                     case 4:
-                        studentScores.Game4Score = request.Score;
+                        _logger.LogInformation("Game 4: Current score {CurrentScore}, New score {NewScore}", 
+                            studentScores.Game4Score, request.Score);
+                        if (request.Score > studentScores.Game4Score)
+                        {
+                            studentScores.Game4Score = request.Score;
+                            scoreUpdated = true;
+                        }
                         break;
                     case 5:
-                        studentScores.Game5Score = request.Score;
+                        _logger.LogInformation("Game 5: Current score {CurrentScore}, New score {NewScore}", 
+                            studentScores.Game5Score, request.Score);
+                        if (request.Score > studentScores.Game5Score)
+                        {
+                            studentScores.Game5Score = request.Score;
+                            scoreUpdated = true;
+                        }
                         break;
                 }
 
+                _logger.LogInformation("Score updated: {ScoreUpdated}", scoreUpdated);
+
+                // Always update the timestamp to track student activity
                 studentScores.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
+                _logger.LogInformation("Score record updated (timestamp refreshed)");
 
                 return Ok(new
                 {
-                    message = "Score updated successfully.",
+                    message = scoreUpdated ? "Score updated successfully." : "Score not updated - current score is higher.",
+                    scoreUpdated = scoreUpdated,
                     student = new UserResponse
                     {
                         UserId = student.StudentID,
@@ -93,7 +133,8 @@ namespace MinigamesAPI.Controllers
                         ScoreGame2 = studentScores.Game2Score,
                         ScoreGame3 = studentScores.Game3Score,
                         ScoreGame4 = studentScores.Game4Score,
-                        ScoreGame5 = studentScores.Game5Score
+                        ScoreGame5 = studentScores.Game5Score,
+                        LastUpdated = studentScores.UpdatedAt
                     }
                 });
             }
@@ -128,7 +169,8 @@ namespace MinigamesAPI.Controllers
                     ScoreGame2 = s.StudentScores?.Game2Score ?? 0,
                     ScoreGame3 = s.StudentScores?.Game3Score ?? 0,
                     ScoreGame4 = s.StudentScores?.Game4Score ?? 0,
-                    ScoreGame5 = s.StudentScores?.Game5Score ?? 0
+                    ScoreGame5 = s.StudentScores?.Game5Score ?? 0,
+                    LastUpdated = s.StudentScores?.UpdatedAt
                 }).ToList();
 
                 // Sort by the specific game score

@@ -305,8 +305,13 @@ async function endGame(completed, includeTimeBonus = true) {
   gameOverScreen.style.display = 'block';
   
   // Calculate score
-  const timeBonus = includeTimeBonus ? Math.floor(Math.max(0, timeRemaining) / 30) : 0;
-  const currentScore = roomsCompleted + timeBonus;
+  // Base score: 10 points per room completed (minimum 100 for completing all 10 rooms)
+  const baseScore = roomsCompleted * 10;
+  
+  // Time bonus: 5 points for every 30 seconds remaining
+  const timeBonus = includeTimeBonus ? Math.floor(Math.max(0, timeRemaining) / 30) * 5 : 0;
+  
+  const currentScore = baseScore + timeBonus;
   
   // Update game over screen
   if (completed) {
@@ -317,12 +322,12 @@ async function endGame(completed, includeTimeBonus = true) {
     document.getElementById('gameOverTitle').textContent = 'Game Over!';
   }
   
-  document.getElementById('roomsCompleted').textContent = roomsCompleted;
-  document.getElementById('timeBonus').textContent = timeBonus;
+  document.getElementById('roomsCompleted').textContent = `${roomsCompleted} × 10 = ${baseScore}`;
+  document.getElementById('timeBonus').textContent = includeTimeBonus ? `${Math.floor(Math.max(0, timeRemaining) / 30)} × 5 = ${timeBonus}` : '0 (Game Quit)';
   document.getElementById('currentScore').textContent = currentScore;
   
   // Get previous high score and check if this is a new record
-  const currentUser = getCurrentUser();
+  const currentUser = window.Auth.getCurrentUser();
   let previousHighScore = 0;
   let isNewHighScore = false;
   
@@ -377,17 +382,10 @@ function backToMenu() {
 // Save score using local progress tracking
 async function saveScore(score) {
   try {
-    // Check if student is logged in
-    if (!window.GameProgress || !window.GameProgress.isStudentLoggedIn()) {
-      console.log('Score not saved: Student not logged in');
-      return;
-    }
-
     // Save progress using the new system
-    const success = window.GameProgress.saveGameProgress(4, score);
+    const success = await window.GameProgress.saveGameProgress(4, score);
     
     if (success) {
-      console.log('Score saved successfully:', score);
     } else {
       console.error('Failed to save score');
     }
@@ -398,7 +396,7 @@ async function saveScore(score) {
 
 // Show past results
 async function showPastResults() {
-  const currentUser = getCurrentUser();
+  const currentUser = window.Auth.getCurrentUser();
   
   if (!currentUser) {
     // Not logged in

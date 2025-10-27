@@ -10,6 +10,8 @@ namespace MinigamesAPI.DTOs
         public int? ScoreGame3 { get; set; }
         public int? ScoreGame4 { get; set; }
         public int? ScoreGame5 { get; set; }
+        public DateTime? LastUpdated { get; set; }
+        public string? ClassId { get; set; }
     }
 }
 

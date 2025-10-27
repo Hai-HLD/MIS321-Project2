@@ -1,5 +1,41 @@
 // Game 3: Robot Beeper Challenge - Visual Programming Game
 
+// Notification utility function to replace alerts
+function showNotification(message, type = 'info') {
+  // Remove any existing notifications
+  const existingNotification = document.getElementById('notification');
+  if (existingNotification) {
+    existingNotification.remove();
+  }
+
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.id = 'notification';
+  notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+  notification.style.cssText = `
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    max-width: 500px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  `;
+  
+  notification.innerHTML = `
+    ${message}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Auto-remove after 5 seconds
+  setTimeout(() => {
+    if (notification && notification.parentNode) {
+      notification.remove();
+    }
+  }, 5000);
+}
+
 // Game state
 let currentLevel = 1;
 let robot = { x: 0, y: 0, direction: 0 }; // 0=East, 1=South, 2=West, 3=North
@@ -12,6 +48,77 @@ let program = [];
 let timeLimit = 0;
 let timeLeft = 0;
 let gameTimer = null;
+
+// Difficulty scores and completion tracking
+const difficultyScores = {
+  1: 10,  // Easy
+  2: 20,  // Medium
+  3: 30,  // Hard
+  4: 40,  // Extreme
+  5: 50   // Master
+};
+
+let completedLevels = new Set(); // Track which levels have been completed
+
+// Load completed levels from user progress
+async function loadCompletedLevels() {
+  try {
+    if (window.GameProgress && window.GameProgress.isStudentLoggedIn()) {
+      const progress = await window.GameProgress.getGameProgress();
+      if (progress && progress.scoreGame3) {
+        // Calculate which levels are completed based on score
+        let score = progress.scoreGame3;
+        const sortedLevels = Object.entries(difficultyScores).sort((a, b) => a[0] - b[0]);
+        
+        for (const [level, levelScore] of sortedLevels) {
+          if (score >= levelScore) {
+            completedLevels.add(parseInt(level));
+            score -= levelScore;
+          } else {
+            break;
+          }
+        }
+      }
+    }
+    updateLevelButtons();
+  } catch (error) {
+    console.error('Error loading completed levels:', error);
+  }
+}
+
+// Update level buttons to show completion status
+function updateLevelButtons() {
+  const levelButtons = document.querySelectorAll('.level-btn');
+  levelButtons.forEach(button => {
+    const level = parseInt(button.dataset.level);
+    const isCompleted = completedLevels.has(level);
+    
+    if (isCompleted) {
+      button.classList.add('completed');
+      button.innerHTML = `
+        <div class="level-title">${levels[level].name} ✅</div>
+        <div class="level-desc">${levels[level].description}</div>
+        <div class="level-difficulty">Completed!</div>
+      `;
+      button.style.background = '#198754';
+    } else {
+      button.classList.remove('completed');
+      const emoji = ['🌱', '⚡', '🔥', '🚀', '🏆'][level - 1];
+      button.innerHTML = `
+        <div class="level-title">${emoji} ${levels[level].name}</div>
+        <div class="level-desc">${levels[level].description}</div>
+        <div class="level-difficulty">${getDifficultyText(level)}</div>
+      `;
+      button.style.background = '#0d6efd';
+    }
+  });
+}
+
+// Get difficulty text for display
+function getDifficultyText(level) {
+  const texts = ['Beginner Friendly', 'Strategic Thinking', 'Expert Level', 'Speed Challenge', 'Legendary'];
+  return texts[level - 1] || 'Challenge';
+}
 
 // Level configurations
 const levels = {
@@ -97,7 +204,7 @@ function startTimer() {
     updateTimerDisplay();
     if (timeLeft <= 0) {
       clearInterval(gameTimer);
-      alert('⏰ Time\'s up! Try again!');
+      showNotification('⏰ Time\'s up! Try again!', 'warning');
       resetGame();
     }
   }, 1000);
@@ -230,9 +337,9 @@ async function runProgram() {
     await new Promise(resolve => setTimeout(resolve, 800)); // Animation delay
     
         if (beepers.length === 0) {
-          alert('🎉 Congratulations! You collected all beepers!');
+          showNotification('🎉 Congratulations! You collected all beepers!', 'success');
           // Save progress when level is completed
-          saveLevelProgress();
+          await saveLevelProgress();
           break;
         }
   }
@@ -329,8 +436,9 @@ function clearCode() {
 }
 
 // Event listeners
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initGame();
+  await loadCompletedLevels(); // Load completed levels on page load
   
   // Level selection
   document.querySelectorAll('.level-btn').forEach(btn => {
@@ -355,27 +463,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Save level progress
-function saveLevelProgress() {
+async function saveLevelProgress() {
   try {
     // Check if student is logged in
     if (!window.GameProgress || !window.GameProgress.isStudentLoggedIn()) {
-      console.log('Progress not saved: Student not logged in');
       return;
     }
 
-    // Calculate score based on level and performance
-    let score = 0;
-    const baseScore = currentLevel * 20; // Base score per level
-    const efficiencyBonus = Math.max(0, 100 - movesUsed); // Bonus for fewer moves
-    const timeBonus = timeLimit > 0 ? Math.max(0, timeLeft * 2) : 50; // Time bonus if applicable
+    // Mark this level as completed
+    completedLevels.add(currentLevel);
     
-    score = baseScore + efficiencyBonus + timeBonus;
+    // Calculate cumulative score: current difficulty score + all previous difficulty scores
+    let totalScore = 0;
+    for (let level = 1; level <= currentLevel; level++) {
+      if (completedLevels.has(level)) {
+        totalScore += difficultyScores[level];
+      }
+    }
     
-    // Save progress using the new system
-    const success = window.GameProgress.saveGameProgress(3, score);
+    // Save progress using the new system (only save if higher than current high score)
+    const success = await window.GameProgress.saveGameProgress(3, totalScore);
     
     if (success) {
-      console.log('Level progress saved:', score);
+      console.log(`Level ${currentLevel} completed! Total score: ${totalScore}`);
+      // Update the level buttons to show completion status
+      updateLevelButtons();
     } else {
       console.error('Failed to save level progress');
     }

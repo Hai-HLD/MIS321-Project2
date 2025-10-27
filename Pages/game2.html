@@ -15,47 +15,11 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   </head>
   <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <div class="container">
-        <a class="navbar-brand" href="./home.html">Educational Minigames</a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-          aria-controls="navbarNav"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="./home.html">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="./game.html">Games</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./ranking.html">Rankings</a>
-            </li>
-            <li class="nav-item" id="profileNavItem" style="display: none;">
-              <a class="nav-link" href="./profile.html" id="profileLink">Profile</a>
-            </li>
-            <li class="nav-item" id="teacherDashboardNavItem" style="display: none;">
-              <a class="nav-link" href="./teacher-dashboard.html" id="teacherDashboardLink">Teacher Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="./login.html" id="authLink">Login</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
 
     <!-- Back Button -->
     <div class="container">
@@ -68,8 +32,38 @@
 
     <!-- Main Content -->
     <div class="container py-5">
-      <div id="app">
-        <!-- Game content will be dynamically inserted here -->
+      <!-- Game Header -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card bg-success text-white">
+            <div class="card-body py-3">
+              <div class="row align-items-center">
+                <div class="col-md-4">
+                  <h5 class="mb-0">Science Lab</h5>
+                </div>
+                <div class="col-md-4 text-center">
+                  <h4 class="mb-0" id="timer">2:00</h4>
+                </div>
+                <div class="col-md-4 text-end">
+                  <button class="btn btn-danger btn-sm float-end" id="quitGameBtn">Quit</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Area -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-body">
+              <div id="app">
+                <!-- Game content will be dynamically inserted here -->
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

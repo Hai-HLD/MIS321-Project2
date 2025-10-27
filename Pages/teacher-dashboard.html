@@ -13,8 +13,8 @@
       crossorigin="anonymous"
     />
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
@@ -83,13 +83,6 @@
         margin: 0 auto;
       }
       
-      .chart-container {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 2rem;
-      }
       
       .filter-tabs {
         background: #f8f9fa;
@@ -110,6 +103,25 @@
       .filter-tab.active {
         background: #0d6efd;
         color: white;
+      }
+      
+      .class-id-code {
+        font-family: 'Courier New', monospace;
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #0d6efd;
+        background-color: #f8f9fa;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        border: 2px solid #0d6efd;
+        display: inline-block;
+        letter-spacing: 2px;
+      }
+      
+      .class-id-display {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
       }
       
       .search-box {
@@ -153,9 +165,6 @@
               <a class="nav-link" href="./ranking.html">Rankings</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./profile.html">Profile</a>
-            </li>
-            <li class="nav-item">
               <a class="nav-link active" href="./teacher-dashboard.html">Teacher Dashboard</a>
             </li>
             <li class="nav-item">
@@ -184,76 +193,70 @@
 
     <!-- Main Content -->
     <div class="container">
-      <!-- Statistics Cards -->
+      <!-- Class ID Section -->
       <div class="row mb-4">
-        <div class="col-md-3">
-          <div class="stat-card">
-            <div class="stat-number" id="totalStudents">24</div>
-            <div class="stat-label">Total Students</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="stat-card success">
-            <div class="stat-number" id="activeStudents">18</div>
-            <div class="stat-label">Active This Week</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="stat-card warning">
-            <div class="stat-number" id="avgScore">87%</div>
-            <div class="stat-label">Average Score</div>
-          </div>
-        </div>
-        <div class="col-md-3">
-          <div class="stat-card danger">
-            <div class="stat-number" id="needsHelp">3</div>
-            <div class="stat-label">Need Help</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Class Code Section -->
-      <div class="row mb-4" id="classCodeSection" style="display: none;">
         <div class="col-12">
-          <div class="alert alert-info">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h6 class="mb-1">📚 Your Class Code</h6>
-                <p class="mb-0">Share this code with your students so they can join your class:</p>
-              </div>
-              <div class="text-end">
-                <h4 class="mb-0 text-primary" id="classCodeDisplay">ABC123</h4>
-                <button class="btn btn-sm btn-outline-primary mt-2" onclick="copyClassCode()">📋 Copy Code</button>
+          <div class="card border-primary">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0">🏫 Your Class Information</h5>
+            </div>
+            <div class="card-body">
+              <div class="row align-items-center">
+                <div class="col-md-8">
+                  <h6 class="mb-1">Class ID for Student Registration</h6>
+                  <p class="text-muted mb-0">Share this 8-digit code with your students so they can join your class.</p>
+                </div>
+                <div class="col-md-4 text-end">
+                  <div class="class-id-display">
+                    <span class="class-id-code" id="mainTeacherClassId">Loading...</span>
+                    <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyClassId()" title="Copy Class ID">
+                      📋 Copy
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Charts Row -->
+      
+      <!-- Statistics Cards -->
       <div class="row mb-4">
-        <div class="col-lg-8">
-          <div class="chart-container">
-            <h5 class="mb-3">📈 Student Progress Over Time</h5>
-            <canvas id="progressChart"></canvas>
+        <div class="col-md-3">
+          <div class="stat-card">
+            <div class="stat-number" id="totalStudents">-</div>
+            <div class="stat-label">Total Students</div>
           </div>
         </div>
-        <div class="col-lg-4">
-          <div class="chart-container">
-            <h5 class="mb-3">🎯 Game Completion Rates</h5>
-            <canvas id="completionChart"></canvas>
+        <div class="col-md-3">
+          <div class="stat-card success">
+            <div class="stat-number" id="activeStudents">-</div>
+            <div class="stat-label">Active This Week</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card warning">
+            <div class="stat-number" id="avgScore">-</div>
+            <div class="stat-label">Average Score</div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="stat-card danger">
+            <div class="stat-number" id="needsHelp">-</div>
+            <div class="stat-label">Need Help</div>
           </div>
         </div>
       </div>
 
+
       <!-- Student Management -->
       <div class="row">
         <div class="col-12">
-          <div class="chart-container">
+          <div class="card">
+            <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 class="mb-0">👥 Student Management</h5>
+              <h5 class="mb-0">👥 Class Students</h5>
               <div class="d-flex gap-2">
-                <button class="btn btn-success btn-sm" onclick="showAddStudentModal()">➕ Add Student</button>
                 <input type="text" class="form-control search-box" id="studentSearch" placeholder="Search students..." style="width: 200px;">
                 <div class="filter-tabs">
                   <button class="filter-tab active" data-filter="all">All</button>
@@ -267,65 +270,13 @@
             <div id="studentsList">
               <!-- Student cards will be populated here -->
             </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Add Student Modal -->
-    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="addStudentModalLabel">Add New Student</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="addStudentForm">
-              <div class="mb-3">
-                <label for="studentName" class="form-label">Student Name</label>
-                <input type="text" class="form-control" id="studentName" required>
-              </div>
-              <div class="mb-3">
-                <label for="studentEmail" class="form-label">Email</label>
-                <input type="email" class="form-control" id="studentEmail" required>
-              </div>
-              <div class="mb-3">
-                <label for="studentId" class="form-label">Student ID</label>
-                <input type="text" class="form-control" id="studentId" required>
-              </div>
-              <div class="mb-3">
-                <label for="studentPassword" class="form-label">Password</label>
-                <input type="password" class="form-control" id="studentPassword" required>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            <button type="button" class="btn btn-primary" onclick="addStudent()">Add Student</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Student Details Modal -->
-    <div class="modal fade" id="studentDetailsModal" tabindex="-1" aria-labelledby="studentDetailsModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="studentDetailsModalLabel">Student Details</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body" id="studentDetailsContent">
-            <!-- Student details will be populated here -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-danger" id="deleteStudentBtn" onclick="deleteStudent()">Delete Student</button>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <!-- Bootstrap JS bundle -->
     <script
@@ -339,9 +290,73 @@
     <script src="../scripts/auth.js"></script>
     
     <script>
+      // Notification utility function to replace alerts
+      function showNotification(message, type = 'info') {
+        // Remove any existing notifications
+        const existingNotification = document.getElementById('notification');
+        if (existingNotification) {
+          existingNotification.remove();
+        }
+
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.id = 'notification';
+        notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+        notification.style.cssText = `
+          top: 20px;
+          right: 20px;
+          z-index: 9999;
+          min-width: 300px;
+          max-width: 500px;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        `;
+        
+        notification.innerHTML = `
+          ${message}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Auto-remove after 5 seconds
+        setTimeout(() => {
+          if (notification && notification.parentNode) {
+            notification.remove();
+          }
+        }, 5000);
+      }
+
+      function copyClassId() {
+        const classIdElement = document.getElementById('mainTeacherClassId');
+        if (!classIdElement) {
+          showNotification('Class ID element not found. Please refresh the page.', 'warning');
+          return;
+        }
+        
+        const classId = classIdElement.textContent;
+        
+        if (classId && classId !== 'Loading...' && classId !== 'Error loading' && classId !== 'Not available') {
+          // Copy to clipboard
+          navigator.clipboard.writeText(classId).then(() => {
+            showNotification('Class ID copied to clipboard!', 'success');
+          }).catch(() => {
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = classId;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showNotification('Class ID copied to clipboard!', 'success');
+          });
+        } else {
+          showNotification('Class ID not available yet. Please wait for it to load.', 'warning');
+        }
+      }
+
       // Check login status and user type when page loads
       document.addEventListener('DOMContentLoaded', () => {
-        if (!window.Auth.isLoggedIn()) {
+        if (!window.Auth || !window.Auth.isLoggedIn()) {
           document.body.innerHTML = `
             <div class="container py-5">
               <div class="row justify-content-center">
@@ -361,7 +376,8 @@
         }
         
         const currentUser = window.Auth.getCurrentUser();
-        if (currentUser.type !== 'teacher') {
+        
+        if (!currentUser || currentUser.type !== 'teacher') {
           document.body.innerHTML = `
             <div class="container py-5">
               <div class="row justify-content-center">
@@ -369,8 +385,10 @@
                   <div class="alert alert-danger text-center">
                     <h4 class="alert-heading">Access Denied</h4>
                     <p>Only teachers can access the teacher dashboard.</p>
+                    <p>You are currently logged in as: <strong>${currentUser ? currentUser.type : 'Unknown'}</strong></p>
                     <hr>
                     <a href="./home.html" class="btn btn-primary">Back to Home</a>
+                    <a href="./login.html" class="btn btn-secondary ms-2">Login as Teacher</a>
                   </div>
                 </div>
               </div>
@@ -380,110 +398,95 @@
         }
         
         // User is a logged-in teacher, load the dashboard
-        loadTeacherDashboard();
+        initDashboard();
       });
       
-      // Load teacher dashboard with real data
-      async function loadTeacherDashboard() {
-        try {
-          // Update dashboard title with teacher's name
-          const currentUser = window.Auth.getCurrentUser();
-          document.getElementById('dashboardTitle').textContent = `Welcome, ${currentUser.TeacherName}`;
-          
-          // Load real student data from API
-          const students = await window.Auth.getAllStudents();
-          console.log('Loaded students:', students);
-          
-          // Update the global students variable with real data
-          window.students = students.map(student => ({
-            id: student.StudentID,
-            name: student.StudentName,
-            email: `${student.StudentID}@school.edu`, // Generate email from ID
-            level: getPerformanceLevel(student),
-            score: getAverageScore(student),
-            gamesCompleted: getCompletedGamesCount(student),
-            lastActive: "Recently", // We don't have last active data
-            progress: getAverageScore(student),
-            gameCompletions: [
-              { game: "Math Challenge", completed: student.StudentScoreGame1 > 0, score: student.StudentScoreGame1 || 0, date: "Recent" },
-              { game: "Science Lab", completed: student.StudentScoreGame2 > 0, score: student.StudentScoreGame2 || 0, date: "Recent" },
-              { game: "Robot Beeper Challenge", completed: student.StudentScoreGame3 > 0, score: student.StudentScoreGame3 || 0, date: "Recent" },
-              { game: "Labyrinth of Lies", completed: student.StudentScoreGame4 > 0, score: student.StudentScoreGame4 || 0, date: "Recent" },
-              { game: "Future Game", completed: student.StudentScoreGame5 > 0, score: student.StudentScoreGame5 || 0, date: "Recent" }
-            ]
-          }));
-          
-          // Initialize the dashboard with real data
-          initializeDashboard();
-          
-        } catch (error) {
-          console.error('Error loading teacher dashboard:', error);
-          document.getElementById('dashboardTitle').textContent = 'Teacher Dashboard - Error Loading Data';
-        }
-      }
-      
-      // Helper functions for student data processing
-      function getPerformanceLevel(student) {
-        const avgScore = getAverageScore(student);
-        if (avgScore >= 80) return 'excellent';
-        if (avgScore >= 60) return 'good';
-        return 'needs-help';
-      }
-      
-      function getAverageScore(student) {
-        const scores = [
-          student.StudentScoreGame1 || 0,
-          student.StudentScoreGame2 || 0,
-          student.StudentScoreGame3 || 0,
-          student.StudentScoreGame4 || 0,
-          student.StudentScoreGame5 || 0
-        ].filter(score => score > 0);
-        
-        if (scores.length === 0) return 0;
-        return Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length);
-      }
-      
-      function getCompletedGamesCount(student) {
-        return [
-          student.StudentScoreGame1,
-          student.StudentScoreGame2,
-          student.StudentScoreGame3,
-          student.StudentScoreGame4,
-          student.StudentScoreGame5
-        ].filter(score => score > 0).length;
-      }
       
       // Initialize student data storage
       let students = [];
 
-      // Load real student data from localStorage
-      function loadStudentData() {
+      // Load real student data from API
+      async function loadStudentData() {
         try {
-          // Get all users from localStorage
-          const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
-          
           // Get current teacher
-          const currentUser = JSON.parse(localStorage.getItem('bridgeEd_currentUser') || '{}');
-          
-          // Filter for students only (either all students or students in this teacher's class)
-          const studentUsers = allUsers.filter(user => {
-            if (user.userType !== 'student') return false;
-            // If teacher is logged in, only show their students
-            if (currentUser.type === 'teacher') {
-              return user.teacherId === currentUser.userId;
+          const currentUser = window.Auth.getCurrentUser();
+          if (!currentUser || currentUser.type !== 'teacher') {
+            students = [];
+            return;
+          }
+
+          // Load teacher profile to get ClassID
+          try {
+            const profileResponse = await fetch(`http://localhost:5000/api/profile/${currentUser.userId}?userType=teacher`);
+            if (profileResponse.ok) {
+              const teacherProfile = await profileResponse.json();
+              
+              // Check if we got a teacher profile (not a student profile)
+              if (teacherProfile.userType !== 'teacher') {
+                showNotification('Error: No teacher profile found for this user ID. Please contact support or create a new teacher account.', 'danger');
+                
+                // Safely update elements if they exist
+                const teacherClassIdElement = document.getElementById('teacherClassId');
+                const mainTeacherClassIdElement = document.getElementById('mainTeacherClassId');
+                
+                if (teacherClassIdElement) {
+                  teacherClassIdElement.textContent = 'Profile Error';
+                }
+                if (mainTeacherClassIdElement) {
+                  mainTeacherClassIdElement.textContent = 'Profile Error';
+                }
+                return;
+              }
+              
+              // Check for ClassId in different possible formats
+              const classId = teacherProfile.classId || teacherProfile.ClassId || 'Not available';
+              
+              // Safely update elements if they exist
+              const teacherClassIdElement = document.getElementById('teacherClassId');
+              const mainTeacherClassIdElement = document.getElementById('mainTeacherClassId');
+              
+              if (teacherClassIdElement) {
+                teacherClassIdElement.textContent = classId;
+              }
+              if (mainTeacherClassIdElement) {
+                mainTeacherClassIdElement.textContent = classId;
+              }
+            } else {
+              // Safely update elements if they exist
+              const teacherClassIdElement = document.getElementById('teacherClassId');
+              const mainTeacherClassIdElement = document.getElementById('mainTeacherClassId');
+              
+              if (teacherClassIdElement) {
+                teacherClassIdElement.textContent = 'Error loading';
+              }
+              if (mainTeacherClassIdElement) {
+                mainTeacherClassIdElement.textContent = 'Error loading';
+              }
             }
-            // If not a teacher, show all students (for testing)
-            return true;
-          });
+          } catch (error) {
+            // Safely update elements if they exist
+            const teacherClassIdElement = document.getElementById('teacherClassId');
+            const mainTeacherClassIdElement = document.getElementById('mainTeacherClassId');
+            
+            if (teacherClassIdElement) {
+              teacherClassIdElement.textContent = 'Error loading';
+            }
+            if (mainTeacherClassIdElement) {
+              mainTeacherClassIdElement.textContent = 'Error loading';
+            }
+          }
+
+          // Get students assigned to this teacher from API
+          const studentUsers = await window.Auth.getStudentsByTeacher(currentUser.userId);
           
           // Convert to dashboard format
           students = studentUsers.map((user, index) => {
             const gameScores = [
-              user.StudentScoreGame1 || 0,
-              user.StudentScoreGame2 || 0,
-              user.StudentScoreGame3 || 0,
-              user.StudentScoreGame4 || 0,
-              user.StudentScoreGame5 || 0
+              user.scoreGame1 || 0,
+              user.scoreGame2 || 0,
+              user.scoreGame3 || 0,
+              user.scoreGame4 || 0,
+              user.scoreGame5 || 0
             ];
             
             const completedGames = gameScores.filter(score => score > 0);
@@ -492,52 +495,47 @@
             
             return {
               id: user.userId || (index + 1),
-              name: user.name || user.StudentName || 'Unknown Student',
-              email: user.email || `${user.userId}@school.edu`,
+              name: user.name || 'Unknown Student',
+              email: '',
               level: getPerformanceLevel(averageScore),
               score: averageScore,
               gamesCompleted: completedGames.length,
-              lastActive: getLastActiveTime(user.lastActive),
+              lastActive: user.lastUpdated || new Date().toISOString(),
               progress: averageScore,
               gameCompletions: [
                 { 
                   game: "Math Challenge", 
-                  completed: (user.StudentScoreGame1 || 0) > 0, 
-                  score: user.StudentScoreGame1 || 0, 
-                  date: user.game1Date || null 
+                  completed: (user.scoreGame1 || 0) > 0, 
+                  score: user.scoreGame1 || 0, 
+                  date: null 
                 },
                 { 
                   game: "Science Lab", 
-                  completed: (user.StudentScoreGame2 || 0) > 0, 
-                  score: user.StudentScoreGame2 || 0, 
-                  date: user.game2Date || null 
+                  completed: (user.scoreGame2 || 0) > 0, 
+                  score: user.scoreGame2 || 0, 
+                  date: null 
                 },
                 { 
                   game: "Robot Beeper Challenge", 
-                  completed: (user.StudentScoreGame3 || 0) > 0, 
-                  score: user.StudentScoreGame3 || 0, 
-                  date: user.game3Date || null 
+                  completed: (user.scoreGame3 || 0) > 0, 
+                  score: user.scoreGame3 || 0, 
+                  date: null 
                 },
                 { 
                   game: "Labyrinth of Lies", 
-                  completed: (user.StudentScoreGame4 || 0) > 0, 
-                  score: user.StudentScoreGame4 || 0, 
-                  date: user.game4Date || null 
+                  completed: (user.scoreGame4 || 0) > 0, 
+                  score: user.scoreGame4 || 0, 
+                  date: null 
                 },
                 { 
                   game: "History Timeline", 
-                  completed: (user.StudentScoreGame5 || 0) > 0, 
-                  score: user.StudentScoreGame5 || 0, 
-                  date: user.game5Date || null 
+                  completed: (user.scoreGame5 || 0) > 0, 
+                  score: user.scoreGame5 || 0, 
+                  date: null 
                 }
               ]
             };
           });
-          
-          // If no real students found, show empty state
-          if (students.length === 0) {
-            students = [];
-          }
           
         } catch (error) {
           console.error('Error loading student data:', error);
@@ -571,38 +569,30 @@
 
       let currentFilter = 'all';
       let searchTerm = '';
-      let selectedStudentId = null;
 
       // Initialize dashboard
-      function initDashboard() {
-        loadStudentData(); // Load real student data first
+      async function initDashboard() {
+        // Ensure DOM elements exist before proceeding
+        const mainClassIdElement = document.getElementById('mainTeacherClassId');
+        if (!mainClassIdElement) {
+          console.error('mainTeacherClassId element not found in DOM');
+          // Wait a bit and try again
+          setTimeout(() => initDashboard(), 100);
+          return;
+        }
+        
+        await loadStudentData(); // Load real student data first
         personalizeDashboard();
         updateStats();
         renderStudents();
-        initCharts();
         setupEventListeners();
       }
 
       function personalizeDashboard() {
-        // Get current user from localStorage
-        const currentUser = JSON.parse(localStorage.getItem('bridgeEd_currentUser') || '{}');
+        // Get current user from sessionStorage
+        const currentUser = window.Auth.getCurrentUser();
         
-        // Show class code section for teachers
-        if (currentUser.type === 'teacher') {
-          const classCodeSection = document.getElementById('classCodeSection');
-          const classCodeDisplay = document.getElementById('classCodeDisplay');
-          
-          // Get teacher's class code from localStorage
-          const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
-          const teacher = allUsers.find(user => user.userId === currentUser.userId && user.userType === 'teacher');
-          
-          if (teacher && teacher.classCode) {
-            classCodeDisplay.textContent = teacher.classCode;
-            classCodeSection.style.display = 'block';
-          }
-        }
-        
-        if (currentUser.name) {
+        if (currentUser && currentUser.name) {
           // Update page title
           document.title = `${currentUser.name}'s Classroom - BridgeEd`;
           
@@ -629,8 +619,20 @@
 
       function updateStats() {
         const totalStudents = students.length;
-        const activeStudents = students.filter(s => s.lastActive.includes('hour') || s.lastActive.includes('minutes')).length;
-        const avgScore = Math.round(students.reduce((sum, s) => sum + s.score, 0) / students.length);
+        
+        // Calculate "Active this week" - students who have updated scores since Monday
+        const now = new Date();
+        const monday = new Date(now);
+        monday.setDate(now.getDate() - now.getDay() + 1); // Get Monday of current week
+        monday.setHours(0, 0, 0, 0); // Start of Monday
+        
+        const activeStudents = students.filter(s => {
+          if (!s.lastActive) return false;
+          const lastActiveDate = new Date(s.lastActive);
+          return lastActiveDate >= monday;
+        }).length;
+        
+        const avgScore = students.length > 0 ? Math.round(students.reduce((sum, s) => sum + s.score, 0) / students.length) : 0;
         const needsHelp = students.filter(s => s.level === 'needs-help').length;
 
         document.getElementById('totalStudents').textContent = totalStudents;
@@ -668,11 +670,12 @@
                 <div class="mb-4">
                   <i class="fas fa-users fa-3x text-muted"></i>
                 </div>
-                <h5 class="text-muted">No Students Yet</h5>
-                <p class="text-muted">Add your first student to get started!</p>
-                <button class="btn btn-primary" onclick="showAddStudentModal()">
-                  <i class="fas fa-plus"></i> Add First Student
-                </button>
+                <h5 class="text-muted">No Students in Class</h5>
+                <p class="text-muted">Students will automatically appear here when they register using your Class ID.</p>
+                <div class="alert alert-info">
+                  <strong>Your Class ID:</strong> <span id="teacherClassId">Loading...</span>
+                  <br><small>Share this 8-digit code with your students for registration.</small>
+                </div>
               </div>
             `;
           } else {
@@ -682,9 +685,9 @@
                   <i class="fas fa-search fa-3x text-muted"></i>
                 </div>
                 <h5 class="text-muted">No Students Found</h5>
-                <p class="text-muted">Try adjusting your search or filter criteria.</p>
-                <button class="btn btn-outline-primary" onclick="document.getElementById('searchInput').value=''; currentFilter='all'; renderStudents();">
-                  <i class="fas fa-refresh"></i> Clear Filters
+                <p class="text-muted">No students match your current search or filter criteria.</p>
+                <button class="btn btn-outline-primary" onclick="clearFilters()">
+                  <i class="fas fa-times"></i> Clear Filters
                 </button>
               </div>
             `;
@@ -697,7 +700,7 @@
             <div class="row align-items-center">
               <div class="col-md-2">
                 <h6 class="mb-1">${student.name}</h6>
-                <small class="text-muted">${student.email}</small>
+                ${student.email ? `<small class="text-muted">${student.email}</small>` : ''}
               </div>
               <div class="col-md-2">
                 <div class="progress" style="height: 20px;">
@@ -722,9 +725,9 @@
                 <small class="text-muted">${student.lastActive}</small>
               </div>
               <div class="col-md-2">
-                <button class="btn btn-sm btn-outline-primary me-1" onclick="viewStudent(${student.id})">
+                <a href="./profile.html?userId=${student.id}" class="btn btn-sm btn-outline-primary me-1">
                   👁️ Details
-                </button>
+                </a>
                 <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteStudent(${student.id})">
                   🗑️ Delete
                 </button>
@@ -758,52 +761,6 @@
         return texts[level] || 'Unknown';
       }
 
-      function initCharts() {
-        // Progress Chart
-        const progressCtx = document.getElementById('progressChart').getContext('2d');
-        new Chart(progressCtx, {
-          type: 'line',
-          data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [{
-              label: 'Average Score',
-              data: [65, 72, 78, 87],
-              borderColor: '#0d6efd',
-              backgroundColor: 'rgba(13, 110, 253, 0.1)',
-              tension: 0.4
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                display: false
-              }
-            }
-          }
-        });
-
-        // Completion Chart
-        const completionCtx = document.getElementById('completionChart').getContext('2d');
-        new Chart(completionCtx, {
-          type: 'doughnut',
-          data: {
-            labels: ['Completed', 'In Progress', 'Not Started'],
-            datasets: [{
-              data: [65, 25, 10],
-              backgroundColor: ['#198754', '#ffc107', '#dc3545']
-            }]
-          },
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: 'bottom'
-              }
-            }
-          }
-        });
-      }
 
       function setupEventListeners() {
         // Search functionality
@@ -830,165 +787,93 @@
         });
       }
 
-      function viewStudent(studentId) {
-        selectedStudentId = studentId;
-        const student = students.find(s => s.id === studentId);
-        
-        const gameCompletionsHTML = student.gameCompletions.map(game => `
-          <div class="row mb-2">
-            <div class="col-md-4">
-              <strong>${game.game}</strong>
-            </div>
-            <div class="col-md-2">
-              <span class="badge ${game.completed ? 'bg-success' : 'bg-secondary'}">
-                ${game.completed ? 'Completed' : 'Not Started'}
-              </span>
-            </div>
-            <div class="col-md-2">
-              <span class="badge ${game.completed ? 'bg-primary' : 'bg-secondary'}">
-                ${game.completed ? `${game.score}%` : 'N/A'}
-              </span>
-            </div>
-            <div class="col-md-4">
-              <small class="text-muted">${game.date || 'Not completed'}</small>
-            </div>
-          </div>
-        `).join('');
 
-        document.getElementById('studentDetailsContent').innerHTML = `
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <h6>Student Information</h6>
-              <p><strong>Name:</strong> ${student.name}</p>
-              <p><strong>Email:</strong> ${student.email}</p>
-              <p><strong>Overall Score:</strong> ${student.score}%</p>
-              <p><strong>Last Active:</strong> ${student.lastActive}</p>
-            </div>
-            <div class="col-md-6">
-              <h6>Performance Summary</h6>
-              <p><strong>Games Completed:</strong> ${student.gamesCompleted}/5</p>
-              <p><strong>Performance Level:</strong> <span class="badge ${getLevelBadgeClass(student.level)}">${getLevelText(student.level)}</span></p>
-              <p><strong>Progress:</strong> ${student.progress}%</p>
-            </div>
-          </div>
-          <hr>
-          <h6>Game Completions</h6>
-          <div class="table-responsive">
-            <table class="table table-sm">
-              <thead>
-                <tr>
-                  <th>Game</th>
-                  <th>Status</th>
-                  <th>Score</th>
-                  <th>Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${student.gameCompletions.map(game => `
-                  <tr>
-                    <td>${game.game}</td>
-                    <td><span class="badge ${game.completed ? 'bg-success' : 'bg-secondary'}">${game.completed ? 'Completed' : 'Not Started'}</span></td>
-                    <td>${game.completed ? `${game.score}%` : 'N/A'}</td>
-                    <td>${game.date || 'Not completed'}</td>
-                  </tr>
-                `).join('')}
-              </tbody>
-            </table>
-          </div>
-        `;
-        
-        const modal = new bootstrap.Modal(document.getElementById('studentDetailsModal'));
-        modal.show();
-      }
-
-      function showAddStudentModal() {
-        document.getElementById('addStudentForm').reset();
-        const modal = new bootstrap.Modal(document.getElementById('addStudentModal'));
-        modal.show();
-      }
-
-      function addStudent() {
-        const name = document.getElementById('studentName').value.trim();
-        const email = document.getElementById('studentEmail').value.trim();
-        const studentId = document.getElementById('studentId').value.trim();
-        const password = document.getElementById('studentPassword').value;
-
-        if (!name || !email || !studentId || !password) {
-          alert('Please fill in all fields.');
-          return;
-        }
-
-        // Check if student ID already exists
-        if (students.find(s => s.id === parseInt(studentId))) {
-          alert('Student ID already exists. Please choose a different ID.');
-          return;
-        }
-
-        // Add new student to localStorage
-        const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
-        
-        const newStudent = {
-          userId: studentId,
-          userType: 'student',
-          name: name,
-          email: email,
-          password: password,
-          StudentScoreGame1: 0,
-          StudentScoreGame2: 0,
-          StudentScoreGame3: 0,
-          StudentScoreGame4: 0,
-          StudentScoreGame5: 0,
-          lastActive: new Date().toISOString()
-        };
-        
-        allUsers.push(newStudent);
-        localStorage.setItem('bridgeEd_users', JSON.stringify(allUsers));
-
-        // Reload student data
-        loadStudentData();
-        updateStats();
-        renderStudents();
-        
-        // Close modal
-        const modal = bootstrap.Modal.getInstance(document.getElementById('addStudentModal'));
-        modal.hide();
-        
-        alert('Student added successfully!');
-      }
 
       function confirmDeleteStudent(studentId) {
         const student = students.find(s => s.id === studentId);
-        if (confirm(`Are you sure you want to delete ${student.name}? This action cannot be undone.`)) {
+        // Create a custom confirmation modal instead of browser confirm
+        const confirmModal = document.createElement('div');
+        confirmModal.innerHTML = `
+          <div class="modal fade" id="confirmDeleteModal" tabindex="-1">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Confirm Delete</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to unassign <strong>${student.name}</strong>? This action cannot be undone.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                  <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Unassign Student</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        document.body.appendChild(confirmModal);
+        
+        const modal = new bootstrap.Modal(document.getElementById('confirmDeleteModal'));
+        modal.show();
+        
+        document.getElementById('confirmDeleteBtn').onclick = () => {
+          modal.hide();
           deleteStudent(studentId);
-        }
+        };
+        
+        // Clean up modal after hiding
+        document.getElementById('confirmDeleteModal').addEventListener('hidden.bs.modal', () => {
+          confirmModal.remove();
+        });
       }
+      
+      async function deleteStudent(studentId) {
+        if (studentId) {
+          try {
+            // Unassign student from teacher via API
+            const response = await fetch(`http://localhost:5000/api/studentprogress/unassign/${studentId}`, {
+              method: 'DELETE'
+            });
 
-      function deleteStudent() {
-        if (selectedStudentId) {
-          // Remove student from localStorage
-          const allUsers = JSON.parse(localStorage.getItem('bridgeEd_users') || '[]');
-          const updatedUsers = allUsers.filter(user => user.userId !== selectedStudentId);
-          localStorage.setItem('bridgeEd_users', JSON.stringify(updatedUsers));
-          
+            if (response.ok) {
           // Reload student data
-          loadStudentData();
+              await loadStudentData();
           updateStats();
           renderStudents();
           
-          // Close modal
-          const modal = bootstrap.Modal.getInstance(document.getElementById('studentDetailsModal'));
-          modal.hide();
           
-          alert('Student deleted successfully!');
+              showNotification('Student unassigned successfully!', 'success');
+            } else {
+              showNotification('Failed to unassign student. Please try again.', 'danger');
+            }
+          } catch (error) {
+            console.error('Error unassigning student:', error);
+            showNotification('Failed to unassign student. Please try again.', 'danger');
+          }
         }
       }
 
       function exportData() {
-        alert('📊 Exporting student data...\n\nThis would generate a CSV file with all student progress data.');
+        showNotification('📊 Exporting student data...<br><br>This would generate a CSV file with all student progress data.', 'info');
       }
 
       function refreshData() {
-        alert('🔄 Refreshing data...\n\nThis would fetch the latest student progress from the server.');
+        showNotification('🔄 Refreshing data...<br><br>This would fetch the latest student progress from the server.', 'info');
+      }
+
+      function clearFilters() {
+        // Reset search
+        document.getElementById('studentSearch').value = '';
+        searchTerm = '';
+        
+        // Reset filter tabs
+        document.querySelectorAll('.filter-tab').forEach(tab => tab.classList.remove('active'));
+        document.querySelector('.filter-tab[data-filter="all"]').classList.add('active');
+        currentFilter = 'all';
+        
+        // Re-render students
+        renderStudents();
       }
 
       function copyClassCode() {

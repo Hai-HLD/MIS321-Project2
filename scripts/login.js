@@ -1,53 +1,23 @@
 // Login page functionality
 let currentUserType = 'student';
 
-// Local storage keys
-const USERS_KEY = 'bridgeEd_users';
-const CURRENT_USER_KEY = 'bridgeEd_currentUser';
-
-// Initialize users storage if not exists
-function initUsersStorage() {
-  if (!localStorage.getItem(USERS_KEY)) {
-    localStorage.setItem(USERS_KEY, JSON.stringify([]));
-  }
-}
-
-// Get all users
-function getAllUsers() {
-  return JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-}
-
-// Save users
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
-}
-
-// Add new user
-function addUser(userData) {
-  const users = getAllUsers();
-  users.push(userData);
-  saveUsers(users);
-}
-
-// Find user by ID and type
-function findUser(userId, userType) {
-  const users = getAllUsers();
-  return users.find(user => user.userId === userId && user.userType === userType);
-}
-
-// Use global Auth functions directly - no need to redeclare them
-
 // Update labels based on user type
 function updateUserTypeLabels() {
   const loginIdLabel = document.getElementById('loginIdLabel');
   const signupIdLabel = document.getElementById('signupIdLabel');
+  const classIdField = document.getElementById('classIdField');
+  const signupClassId = document.getElementById('signupClassId');
   
   if (currentUserType === 'student') {
     loginIdLabel.textContent = 'Student ID';
     signupIdLabel.textContent = 'Student ID';
+    classIdField.style.display = 'block';
+    signupClassId.required = true;
   } else {
     loginIdLabel.textContent = 'Teacher ID';
     signupIdLabel.textContent = 'Teacher ID';
+    classIdField.style.display = 'none';
+    signupClassId.required = false;
   }
 }
 

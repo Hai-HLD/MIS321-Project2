@@ -152,25 +152,18 @@
                         required
                       />
                     </div>
-                    <div class="mb-3" id="classCodeField">
-                      <label for="classCode" class="form-label" id="classCodeLabel">Class Code</label>
+                    <div class="mb-3" id="classIdField" style="display: none;">
+                      <label for="signupClassId" class="form-label">Class ID</label>
                       <input
                         type="text"
                         class="form-control"
-                        id="classCode"
-                        placeholder="Enter your teacher's class code"
+                        id="signupClassId"
+                        placeholder="Enter your teacher's Class ID"
+                        maxlength="8"
+                        pattern="[0-9]{8}"
+                        title="Class ID must be 8 digits"
                       />
-                      <div class="form-text" id="classCodeHelp">Ask your teacher for the class code to join their class</div>
-                    </div>
-                    <div class="mb-3" id="teacherClassCodeField" style="display: none;">
-                      <label for="teacherClassCode" class="form-label">Create Your Class Code</label>
-                      <input
-                        type="text"
-                        class="form-control"
-                        id="teacherClassCode"
-                        placeholder="Enter your desired class code"
-                      />
-                      <div class="form-text">Choose a class code to share with your students</div>
+                      <div class="form-text">Ask your teacher for the 8-digit Class ID</div>
                     </div>
                     <div class="d-grid">
                       <button type="submit" class="btn btn-success">Create Account</button>

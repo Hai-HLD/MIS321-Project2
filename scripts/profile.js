@@ -26,7 +26,7 @@ async function displayCurrentUserProfile() {
   
   try {
     // Fetch fresh data from API
-    const userId = currentUser.StudentID;
+    const userId = currentUser.userId;
     const user = await window.Auth.findUserById(userId);
     
     if (!user) {
@@ -43,8 +43,8 @@ async function displayCurrentUserProfile() {
     notLoggedInMessage.style.display = 'none';
     
     // Get user details
-    const name = user.StudentName;
-    const id = user.StudentID;
+    const name = user.name;
+    const id = user.userId;
     const initial = name.charAt(0).toUpperCase();
     
     // Update profile display
@@ -53,11 +53,11 @@ async function displayCurrentUserProfile() {
     document.getElementById('userId').textContent = id;
     
     // Show scores
-    document.getElementById('score1').textContent = user.StudentScoreGame1 || 0;
-    document.getElementById('score2').textContent = user.StudentScoreGame2 || 0;
-    document.getElementById('score3').textContent = user.StudentScoreGame3 || 0;
-    document.getElementById('score4').textContent = user.StudentScoreGame4 || 0;
-    document.getElementById('score5').textContent = user.StudentScoreGame5 || 0;
+    document.getElementById('score1').textContent = user.scoreGame1 || 0;
+    document.getElementById('score2').textContent = user.scoreGame2 || 0;
+    document.getElementById('score3').textContent = user.scoreGame3 || 0;
+    document.getElementById('score4').textContent = user.scoreGame4 || 0;
+    document.getElementById('score5').textContent = user.scoreGame5 || 0;
     
     // Show profile
     profileDisplay.style.display = 'block';
