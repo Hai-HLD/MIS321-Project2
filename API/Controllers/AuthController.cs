@@ -320,6 +320,71 @@ namespace MinigamesAPI.Controllers
                 return StatusCode(500, new { message = "An error occurred during password reset." });
             }
         }
+
+        [HttpPost("join-class")]
+        public async Task<ActionResult> JoinClass([FromBody] JoinClassRequest request)
+        {
+            try
+            {
+                // Validate input
+                if (string.IsNullOrWhiteSpace(request.StudentID) || string.IsNullOrWhiteSpace(request.ClassID))
+                {
+                    return BadRequest(new { message = "Student ID and Class ID are required." });
+                }
+
+                // Validate ClassID format (8 digits)
+                if (!System.Text.RegularExpressions.Regex.IsMatch(request.ClassID, @"^\d{8}$"))
+                {
+                    return BadRequest(new { message = "Class ID must be exactly 8 digits." });
+                }
+
+                // Check if student exists
+                var student = await _context.Students.FindAsync(request.StudentID);
+                if (student == null)
+                {
+                    return NotFound(new { message = "Student not found." });
+                }
+
+                // Check if the ClassID exists for any teacher
+                var teacherWithClass = await _context.Teachers.FirstOrDefaultAsync(t => t.ClassID == request.ClassID);
+                if (teacherWithClass == null)
+                {
+                    return BadRequest(new { message = "Invalid Class ID. Please check with your teacher." });
+                }
+
+                // Check if student is already in this class
+                var existingInClass = await _context.InClasses
+                    .FirstOrDefaultAsync(ic => ic.StudentID == request.StudentID && ic.TeacherID == teacherWithClass.TeacherID);
+                
+                if (existingInClass != null)
+                {
+                    return Conflict(new { message = "You are already enrolled in this class." });
+                }
+
+                // Create InClass record to link student with teacher
+                var inClass = new InClass
+                {
+                    StudentID = request.StudentID,
+                    TeacherID = teacherWithClass.TeacherID,
+                    ClassID = request.ClassID,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                _context.InClasses.Add(inClass);
+                await _context.SaveChangesAsync();
+
+                return Ok(new { 
+                    message = "Successfully joined the class!",
+                    teacherName = teacherWithClass.TeacherName,
+                    classId = request.ClassID
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error joining class");
+                return StatusCode(500, new { message = "An error occurred while joining the class." });
+            }
+        }
     }
 }
 

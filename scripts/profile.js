@@ -96,6 +96,15 @@ async function displayCurrentUserProfile() {
     document.getElementById('score4').textContent = user.scoreGame4 || 0;
     document.getElementById('score5').textContent = user.scoreGame5 || 0;
     
+    // Show class information (only for students)
+    const classInfoSection = document.getElementById('classInfoSection');
+    if (currentUser.type === 'student') {
+      updateClassInfo(user);
+      if (classInfoSection) classInfoSection.style.display = 'block';
+    } else {
+      if (classInfoSection) classInfoSection.style.display = 'none';
+    }
+    
     // Show profile sections
     profileDisplay.style.display = 'block';
     profileDisplayBody.style.display = 'block';
@@ -112,6 +121,89 @@ async function displayCurrentUserProfile() {
   }
 }
 
+// Update class information display
+function updateClassInfo(user) {
+  const currentClassInfo = document.getElementById('currentClassInfo');
+  const joinClassForm = document.getElementById('joinClassForm');
+  const currentClassIdSpan = document.getElementById('currentClassId');
+  
+  // Handle both camelCase and PascalCase property names
+  const classId = user.classId || user.ClassId;
+  
+  if (classId) {
+    // Student is in a class
+    currentClassIdSpan.textContent = classId;
+    currentClassInfo.style.display = 'block';
+    joinClassForm.style.display = 'none';
+  } else {
+    // Student is not in a class - show join form
+    currentClassInfo.style.display = 'none';
+    joinClassForm.style.display = 'block';
+  }
+}
+
+// Join class function (called from HTML onclick)
+async function joinClass() {
+  const classCodeInput = document.getElementById('classCodeInput');
+  const joinClassMessage = document.getElementById('joinClassMessage');
+  const classCode = classCodeInput.value.trim();
+  
+  // Validate class code
+  if (!classCode) {
+    joinClassMessage.innerHTML = '<div class="alert alert-warning">Please enter a class code.</div>';
+    return;
+  }
+  
+  if (!/^\d{8}$/.test(classCode)) {
+    joinClassMessage.innerHTML = '<div class="alert alert-warning">Class code must be exactly 8 digits.</div>';
+    return;
+  }
+  
+  const currentUser = window.Auth.getCurrentUser();
+  if (!currentUser || currentUser.type !== 'student') {
+    joinClassMessage.innerHTML = '<div class="alert alert-danger">You must be logged in as a student to join a class.</div>';
+    return;
+  }
+  
+  // Disable button and show loading
+  const joinButton = document.querySelector('#joinClassForm button');
+  const originalButtonText = joinButton ? joinButton.innerHTML : '';
+  if (joinButton) {
+    joinButton.disabled = true;
+    joinButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Joining...';
+  }
+  
+  joinClassMessage.innerHTML = '';
+  
+  try {
+    const result = await window.Auth.joinClass(currentUser.userId, classCode);
+    
+    if (result.success) {
+      joinClassMessage.innerHTML = `<div class="alert alert-success">${result.data.message}</div>`;
+      classCodeInput.value = '';
+      
+      // Refresh profile to show updated class info
+      setTimeout(() => {
+        displayCurrentUserProfile();
+      }, 1000);
+    } else {
+      joinClassMessage.innerHTML = `<div class="alert alert-danger">${result.data.message || 'Failed to join class. Please try again.'}</div>`;
+    }
+  } catch (error) {
+    console.error('Error joining class:', error);
+    joinClassMessage.innerHTML = '<div class="alert alert-danger">An error occurred. Please try again.</div>';
+  } finally {
+    // Re-enable button
+    if (joinButton) {
+      joinButton.disabled = false;
+      joinButton.innerHTML = originalButtonText;
+    }
+  }
+}
+
+// Make joinClass globally available
+window.joinClass = joinClass;
+
 // Load profile on page load
 document.addEventListener('DOMContentLoaded', () => {
   // Debug: Check if profile title exists
@@ -122,5 +214,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   
   displayCurrentUserProfile();
+  
+  // Add Enter key support for class code input
+  const classCodeInput = document.getElementById('classCodeInput');
+  if (classCodeInput) {
+    classCodeInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        joinClass();
+      }
+    });
+  }
 });
 

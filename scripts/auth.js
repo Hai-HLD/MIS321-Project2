@@ -87,6 +87,34 @@ async function assignStudentToTeacher(studentId, teacherId) {
   }
 }
 
+// Join a class using class code (API call)
+async function joinClass(studentId, classId) {
+  try {
+    const response = await fetch(`${API_URL}/auth/join-class`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        studentID: studentId,
+        classID: classId
+      })
+    });
+    
+    const result = await response.json();
+    return {
+      success: response.ok,
+      data: result
+    };
+  } catch (error) {
+    console.error('Error joining class:', error);
+    return {
+      success: false,
+      data: { message: 'An error occurred while joining the class.' }
+    };
+  }
+}
+
 // Update navbar based on login status
 function updateNavbar() {
   const authLink = document.getElementById('authLink');
@@ -182,6 +210,7 @@ window.Auth = {
   findUserById,
   getStudentsByTeacher,
   assignStudentToTeacher,
+  joinClass,
   updateNavbar,
   requireAuth
 };

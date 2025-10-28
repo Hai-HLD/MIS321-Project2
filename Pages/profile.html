@@ -105,6 +105,45 @@
         <div class="col-lg-10">
           <!-- Profile Display -->
           <div id="profileDisplayBody" style="display: none;">
+            <!-- Class Information Section -->
+            <div class="row g-4 mb-5" id="classInfoSection">
+              <div class="col-lg-12">
+                <div class="card-modern">
+                  <div class="card-body">
+                    <h3 class="mb-4 text-gradient-stem">
+                      <i class="fas fa-users me-2"></i>Class Information
+                    </h3>
+                    <div id="currentClassInfo" style="display: none;">
+                      <div class="alert alert-success">
+                        <strong>Enrolled in Class:</strong> <span id="currentClassId"></span>
+                      </div>
+                    </div>
+                    <div id="joinClassForm">
+                      <p class="text-muted mb-3">Join a teacher's class using your class code.</p>
+                      <div class="row">
+                        <div class="col-md-8">
+                          <input 
+                            type="text" 
+                            class="form-control form-control-modern" 
+                            id="classCodeInput" 
+                            placeholder="Enter 8-digit class code"
+                            maxlength="8"
+                            pattern="[0-9]{8}"
+                          >
+                        </div>
+                        <div class="col-md-4">
+                          <button class="btn btn-modern w-100" onclick="joinClass()">
+                            <i class="fas fa-plus me-2"></i>Join Class
+                          </button>
+                        </div>
+                      </div>
+                      <div id="joinClassMessage" class="mt-3"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Game Scores Section -->
             <div class="row g-4 mb-5">
               <div class="col-lg-12">

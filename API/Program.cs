@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Data.Sqlite;
 using MinigamesAPI.Data;
 using MinigamesAPI.Models;
 
@@ -32,6 +33,9 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.EnsureCreated();
     
+    // Add missing UpdatedAt columns if they don't exist
+    await MigrateSchema(dbContext);
+    
     // Migrate existing teachers to add ClassID if missing
     await MigrateExistingTeachers(dbContext);
 }
@@ -48,6 +52,56 @@ app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Migration function to add UpdatedAt columns if missing
+async Task MigrateSchema(ApplicationDbContext context)
+{
+    try
+    {
+        var connection = context.Database.GetDbConnection();
+        await connection.OpenAsync();
+        
+        using var command = connection.CreateCommand();
+        
+        // Check and add UpdatedAt to Student table
+        command.CommandText = @"
+            SELECT COUNT(*) FROM pragma_table_info('Student') WHERE name = 'UpdatedAt';
+        ";
+        var studentResult = await command.ExecuteScalarAsync();
+        var studentColumnExists = Convert.ToInt64(studentResult) > 0;
+        
+        if (!studentColumnExists)
+        {
+            command.CommandText = @"
+                ALTER TABLE Student ADD COLUMN UpdatedAt DATETIME;
+            ";
+            await command.ExecuteNonQueryAsync();
+            Console.WriteLine("Added UpdatedAt column to Student table");
+        }
+        
+        // Check and add UpdatedAt to Teacher table
+        command.CommandText = @"
+            SELECT COUNT(*) FROM pragma_table_info('Teacher') WHERE name = 'UpdatedAt';
+        ";
+        var teacherResult = await command.ExecuteScalarAsync();
+        var teacherColumnExists = Convert.ToInt64(teacherResult) > 0;
+        
+        if (!teacherColumnExists)
+        {
+            command.CommandText = @"
+                ALTER TABLE Teacher ADD COLUMN UpdatedAt DATETIME;
+            ";
+            await command.ExecuteNonQueryAsync();
+            Console.WriteLine("Added UpdatedAt column to Teacher table");
+        }
+        
+        await connection.CloseAsync();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error migrating schema: {ex.Message}");
+    }
+}
 
 // Migration function to add ClassID to existing teachers
 async Task MigrateExistingTeachers(ApplicationDbContext context)

@@ -334,6 +334,40 @@
       </div>
     </div>
 
+    <!-- Edit User Modal -->
+    <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editUserModalLabel">Edit User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="editUserMessage"></div>
+            <form id="editUserForm">
+              <input type="hidden" id="editUserId">
+              <input type="hidden" id="editUserType">
+              <div class="mb-3">
+                <label for="editUserName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="editUserName" required>
+              </div>
+              <div class="mb-3">
+                <label for="editUserPassword" class="form-label">Password (leave blank to keep current)</label>
+                <input type="password" class="form-control" id="editUserPassword" placeholder="New password">
+                <small class="form-text text-muted">Leave empty if you don't want to change the password</small>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="saveUserEdit()">
+              <i class="fas fa-save me-1"></i>Save Changes
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Bootstrap JS bundle -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
@@ -590,18 +624,20 @@
           const lastActive = student.lastUpdated ? formatDateTime(student.lastUpdated) : 'Never';
           const totalScore = (student.scoreGame1 || 0) + (student.scoreGame2 || 0) + 
                            (student.scoreGame3 || 0) + (student.scoreGame4 || 0) + (student.scoreGame5 || 0);
+          const userId = student.userId || student.studentID;
+          const userName = student.name || student.studentName;
           
           html += `
             <tr>
               <td>
                 <div class="d-flex align-items-center">
                   <i class="fas fa-user-graduate me-2 text-primary"></i>
-                  <strong>${student.name || student.studentName}</strong>
+                  <strong>${userName}</strong>
                 </div>
               </td>
-              <td><code>${student.userId || student.studentID}</code></td>
+              <td><code>${userId}</code></td>
               <td>
-                ${student.classId || 'N/A'}
+                ${student.classId || student.ClassId || 'N/A'}
               </td>
               <td>
                 ${totalScore}
@@ -611,10 +647,10 @@
               </td>
               <td>
                 <div class="btn-group btn-group-sm">
-                  <button class="btn btn-outline-primary" onclick="editUser('${student.userId || student.studentID}')" title="Edit">
+                  <button class="btn btn-outline-primary" onclick="editUser('${userId}', 'student')" title="Edit">
                     <i class="fas fa-edit"></i>
                   </button>
-                  <button class="btn btn-outline-danger" onclick="deleteUser('${student.userId || student.studentID}')" title="Delete">
+                  <button class="btn btn-outline-danger" onclick="deleteUser('${userId}', 'student')" title="Delete">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
@@ -647,20 +683,22 @@
           
           // Count students for this teacher
           const studentCount = allUsers.filter(user => 
-            user.userType === 'student' && user.classId === teacher.classId
+            user.userType === 'student' && (user.classId === teacher.classId || user.ClassId === teacher.ClassId)
           ).length;
+          const userId = teacher.userId || teacher.teacherID;
+          const userName = teacher.name || teacher.teacherName;
           
           html += `
             <tr>
               <td>
                 <div class="d-flex align-items-center">
                   <i class="fas fa-chalkboard-teacher me-2 text-success"></i>
-                  <strong>${teacher.name || teacher.teacherName}</strong>
+                  <strong>${userName}</strong>
                 </div>
               </td>
-              <td><code>${teacher.userId || teacher.teacherID}</code></td>
+              <td><code>${userId}</code></td>
               <td>
-                ${teacher.classId || 'N/A'}
+                ${teacher.classId || teacher.ClassId || 'N/A'}
               </td>
               <td>
                 ${studentCount}
@@ -670,10 +708,10 @@
               </td>
               <td>
                 <div class="btn-group btn-group-sm">
-                  <button class="btn btn-outline-primary" onclick="editUser('${teacher.userId || teacher.teacherID}')" title="Edit">
+                  <button class="btn btn-outline-primary" onclick="editUser('${userId}', 'teacher')" title="Edit">
                     <i class="fas fa-edit"></i>
                   </button>
-                  <button class="btn btn-outline-danger" onclick="deleteUser('${teacher.userId || teacher.teacherID}')" title="Delete">
+                  <button class="btn btn-outline-danger" onclick="deleteUser('${userId}', 'teacher')" title="Delete">
                     <i class="fas fa-trash"></i>
                   </button>
                 </div>
@@ -725,13 +763,96 @@
         });
       }
 
-      function editUser(userId) {
-        alert(`Edit user functionality for ${userId} would be implemented here`);
+      function editUser(userId, userType) {
+        // Find the user in allUsers array
+        const user = allUsers.find(u => (u.userId || u.studentID || u.teacherID) === userId);
+        if (!user) {
+          alert('User not found');
+          return;
+        }
+
+        // Populate modal
+        document.getElementById('editUserId').value = userId;
+        document.getElementById('editUserType').value = userType;
+        document.getElementById('editUserName').value = user.name || user.studentName || user.teacherName || '';
+        document.getElementById('editUserPassword').value = '';
+        document.getElementById('editUserMessage').innerHTML = '';
+
+        // Show modal
+        const modal = new bootstrap.Modal(document.getElementById('editUserModal'));
+        modal.show();
       }
 
-      function deleteUser(userId) {
-        if (confirm(`Are you sure you want to delete user ${userId}?`)) {
-          alert(`Delete user functionality for ${userId} would be implemented here`);
+      async function saveUserEdit() {
+        const userId = document.getElementById('editUserId').value;
+        const userType = document.getElementById('editUserType').value;
+        const name = document.getElementById('editUserName').value.trim();
+        const password = document.getElementById('editUserPassword').value.trim();
+        const messageDiv = document.getElementById('editUserMessage');
+
+        if (!name) {
+          messageDiv.innerHTML = '<div class="alert alert-warning">Name is required.</div>';
+          return;
+        }
+
+        try {
+          const updateData = {
+            name: name,
+            userType: userType
+          };
+
+          if (password) {
+            updateData.password = password;
+          }
+
+          const response = await fetch(`${window.API_URL}/admin/users/${userId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(updateData)
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            messageDiv.innerHTML = '<div class="alert alert-success">User updated successfully!</div>';
+            
+            // Close modal and refresh after a short delay
+            setTimeout(() => {
+              bootstrap.Modal.getInstance(document.getElementById('editUserModal')).hide();
+              refreshData();
+            }, 1000);
+          } else {
+            messageDiv.innerHTML = `<div class="alert alert-danger">${result.message || 'Failed to update user.'}</div>`;
+          }
+        } catch (error) {
+          console.error('Error updating user:', error);
+          messageDiv.innerHTML = '<div class="alert alert-danger">An error occurred while updating the user.</div>';
+        }
+      }
+
+      async function deleteUser(userId, userType) {
+        if (!confirm(`Are you sure you want to delete this ${userType}?\n\nThis action cannot be undone and will remove all associated data.`)) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${window.API_URL}/admin/users/${userId}?userType=${userType}`, {
+            method: 'DELETE'
+          });
+
+          const result = await response.json();
+
+          if (response.ok) {
+            alert(`User deleted successfully!`);
+            refreshData();
+          } else {
+            alert(`Error: ${result.message || 'Failed to delete user.'}`);
+          }
+        } catch (error) {
+          console.error('Error deleting user:', error);
+          alert('An error occurred while deleting the user.');
         }
       }
 
