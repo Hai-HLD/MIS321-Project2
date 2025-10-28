@@ -45,7 +45,11 @@ namespace MinigamesAPI.Controllers
                                 ScoreGame3 = studentSpecific.StudentScores?.Game3Score ?? 0,
                                 ScoreGame4 = studentSpecific.StudentScores?.Game4Score ?? 0,
                                 ScoreGame5 = studentSpecific.StudentScores?.Game5Score ?? 0,
-                                LastUpdated = studentSpecific.StudentScores?.UpdatedAt
+                                LastUpdated = (studentSpecific.UpdatedAt ?? studentSpecific.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                                ClassId = await _context.InClasses
+                                    .Where(ic => ic.StudentID == studentSpecific.StudentID)
+                                    .Select(ic => ic.ClassID)
+                                    .FirstOrDefaultAsync()
                             });
                         }
                     }
@@ -76,7 +80,7 @@ namespace MinigamesAPI.Controllers
                                 UserId = teacherSpecific.TeacherID,
                                 Name = teacherSpecific.TeacherName,
                                 UserType = "teacher",
-                                LastUpdated = null,
+                                LastUpdated = (teacherSpecific.UpdatedAt ?? teacherSpecific.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                                 ClassId = teacherSpecific.ClassID
                             });
                         }
@@ -103,7 +107,11 @@ namespace MinigamesAPI.Controllers
                         ScoreGame3 = studentLegacy.StudentScores?.Game3Score ?? 0,
                         ScoreGame4 = studentLegacy.StudentScores?.Game4Score ?? 0,
                         ScoreGame5 = studentLegacy.StudentScores?.Game5Score ?? 0,
-                        LastUpdated = studentLegacy.StudentScores?.UpdatedAt
+                        LastUpdated = (studentLegacy.UpdatedAt ?? studentLegacy.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                        ClassId = await _context.InClasses
+                            .Where(ic => ic.StudentID == studentLegacy.StudentID)
+                            .Select(ic => ic.ClassID)
+                            .FirstOrDefaultAsync()
                     });
                 }
 
@@ -133,7 +141,7 @@ namespace MinigamesAPI.Controllers
                         UserId = teacherLegacy.TeacherID,
                         Name = teacherLegacy.TeacherName,
                         UserType = "teacher",
-                        LastUpdated = null,
+                        LastUpdated = (teacherLegacy.UpdatedAt ?? teacherLegacy.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                         ClassId = teacherLegacy.ClassID
                     });
                 }
@@ -164,7 +172,11 @@ namespace MinigamesAPI.Controllers
                         ScoreGame3 = s.StudentScores != null ? s.StudentScores.Game3Score : 0,
                         ScoreGame4 = s.StudentScores != null ? s.StudentScores.Game4Score : 0,
                         ScoreGame5 = s.StudentScores != null ? s.StudentScores.Game5Score : 0,
-                        LastUpdated = s.StudentScores != null ? s.StudentScores.UpdatedAt : null
+                        LastUpdated = (s.UpdatedAt ?? s.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                        ClassId = _context.InClasses
+                            .Where(ic => ic.StudentID == s.StudentID)
+                            .Select(ic => ic.ClassID)
+                            .FirstOrDefault()
                     })
                     .ToListAsync();
 
@@ -174,6 +186,31 @@ namespace MinigamesAPI.Controllers
             {
                 _logger.LogError(ex, "Error fetching all students");
                 return StatusCode(500, new { message = "An error occurred while fetching students." });
+            }
+        }
+
+        [HttpGet("teachers")]
+        public async Task<ActionResult<List<UserResponse>>> GetAllTeachers()
+        {
+            try
+            {
+                var teachers = await _context.Teachers
+                    .Select(t => new UserResponse
+                    {
+                        UserId = t.TeacherID,
+                        Name = t.TeacherName,
+                        UserType = "teacher",
+                        ClassId = t.ClassID,
+                        LastUpdated = (t.UpdatedAt ?? t.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
+                    })
+                    .ToListAsync();
+
+                return Ok(teachers);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching all teachers");
+                return StatusCode(500, new { message = "An error occurred while fetching teachers." });
             }
         }
     }

@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Rankings - Educational Minigames</title>
+    <title>Rankings - BridgeEd</title>
+    <meta name="description" content="View student rankings and leaderboards for all educational minigames. Compete with other students and track your progress.">
 
     <!-- Bootstrap CSS -->
     <link
@@ -14,22 +15,22 @@
     />
 
     <!-- Font Awesome -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
+    <link rel="stylesheet" href="../styles/gabby-design.css" />
   </head>
   <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="./home.html">Educational Minigames</a>
+        <a class="navbar-brand" href="./home.html">
+          <i class="fas fa-graduation-cap me-2"></i>BridgeEd
+        </a>
         <button
           class="navbar-toggler"
           type="button"
@@ -46,7 +47,7 @@
             <li class="nav-item">
               <a class="nav-link" href="./home.html">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="gamesNavItem">
               <a class="nav-link" href="./game.html">Games</a>
             </li>
             <li class="nav-item">
@@ -58,6 +59,9 @@
             <li class="nav-item" id="teacherDashboardNavItem" style="display: none;">
               <a class="nav-link" href="./teacher-dashboard.html" id="teacherDashboardLink">Teacher Dashboard</a>
             </li>
+            <li class="nav-item" id="adminNavItem" style="display: none;">
+              <a class="nav-link" href="./admin.html" id="adminLink">Admin</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="./login.html" id="authLink">Login</a>
             </li>
@@ -66,19 +70,34 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container py-5">
-      <h1 class="text-center mb-5">Game Rankings</h1>
+    <!-- Hero Section -->
+    <section class="hero-section" style="margin-top: 76px;">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center hero-content">
+            <h1 class="display-4 fw-bold mb-4 fade-in">
+              <i class="fas fa-trophy me-3"></i>Game <span class="text-gradient-stem">Rankings</span>
+            </h1>
+            <p class="lead mb-4 fade-in">
+              Compete with other students and see who's leading the pack! 
+              Track your progress and climb the leaderboards.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <!-- Game Filter -->
-      <div class="row justify-content-center mb-4">
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title text-center mb-3">Select Ranking Type</h5>
-              <div class="d-grid gap-2">
-                <button class="btn btn-primary" id="totalRankingsBtn">
-                  <i class="fas fa-trophy"></i> Total Score Rankings (Top 10)
+    <!-- Rankings Section -->
+    <section class="rankings-section">
+      <div class="container">
+        <!-- Game Filter -->
+        <div class="row justify-content-center mb-5">
+          <div class="col-lg-8">
+            <div class="ranking-card fade-in">
+              <h5 class="text-center mb-4 text-gradient-stem">Select Ranking Type</h5>
+              <div class="d-grid gap-3">
+                <button class="btn btn-modern" id="totalRankingsBtn">
+                  <i class="fas fa-trophy me-2"></i>Total Score Rankings (Top 10)
                 </button>
                 <div class="btn-group" role="group">
                   <button class="btn btn-outline-primary" id="game1Btn">Algebra</button>
@@ -91,17 +110,16 @@
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Rankings Display -->
-      <div class="row justify-content-center">
-        <div class="col-lg-10">
-          <div class="card">
-            <div class="card-header">
-              <h4 class="mb-0" id="rankingTitle">Total Score Rankings</h4>
-              <small class="text-muted" id="rankingSubtitle">Top 10 students by combined score across all games</small>
-            </div>
-            <div class="card-body">
+        <!-- Rankings Display -->
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <div class="ranking-card fade-in">
+              <div class="text-center mb-4">
+                <h4 class="mb-2 text-gradient-stem" id="rankingTitle">Total Score Rankings</h4>
+                <small class="text-muted" id="rankingSubtitle">Top 10 students by combined score across all games</small>
+              </div>
+              
               <div id="loadingSpinner" class="text-center py-4" style="display: none;">
                 <div class="spinner-border text-primary" role="status">
                   <span class="visually-hidden">Loading...</span>
@@ -141,7 +159,32 @@
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-5" style="background: var(--primary-gradient); color: white;">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="display-6 fw-bold mb-4 fade-in">
+              Ready to Compete?
+            </h2>
+            <p class="lead mb-4 fade-in">
+              Start playing games now to build up your scores and climb 
+              the leaderboards!
+            </p>
+            <div class="d-flex gap-3 justify-content-center fade-in" id="ctaButtons">
+              <a href="./game.html" class="btn btn-light btn-lg">
+                <i class="fas fa-gamepad me-2"></i>Play Games
+              </a>
+              <a href="./login.html" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Join Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Bootstrap JS bundle -->
     <script
@@ -154,6 +197,76 @@
     <script src="../scripts/main.js"></script>
     <script src="../scripts/auth.js"></script>
     <script src="../scripts/ranking.js"></script>
+    
+    <script>
+      // Fade in animation on scroll
+      function fadeInOnScroll() {
+        const elements = document.querySelectorAll('.fade-in');
+        elements.forEach(element => {
+          const elementTop = element.getBoundingClientRect().top;
+          const elementVisible = 150;
+          
+          if (elementTop < window.innerHeight - elementVisible) {
+            element.classList.add('visible');
+          }
+        });
+      }
+
+      // Navbar scroll effect
+      function navbarScrollEffect() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+          navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+          navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
+        } else {
+          navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+          navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        }
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication and show appropriate nav items
+        const currentUser = window.Auth.getCurrentUser();
+        if (currentUser) {
+          document.getElementById('authLink').textContent = 'Logout';
+          document.getElementById('authLink').href = '#';
+          document.getElementById('authLink').onclick = function() {
+            window.Auth.logout();
+            window.location.href = './login.html';
+          };
+          
+          // Hide CTA buttons when logged in
+          const ctaButtons = document.getElementById('ctaButtons');
+          if (ctaButtons) {
+            ctaButtons.style.display = 'none';
+          }
+          
+          if (currentUser.type === 'student') {
+            document.getElementById('profileNavItem').style.display = 'block';
+          } else if (currentUser.type === 'teacher') {
+            document.getElementById('teacherDashboardNavItem').style.display = 'block';
+          }
+        } else {
+          // Ensure buttons are visible when not logged in
+          const ctaButtons = document.getElementById('ctaButtons');
+          if (ctaButtons) {
+            ctaButtons.style.display = 'flex';
+          }
+        }
+
+        // Initialize animations and effects
+        fadeInOnScroll();
+        
+        // Add scroll event listeners
+        window.addEventListener('scroll', function() {
+          fadeInOnScroll();
+          navbarScrollEffect();
+        });
+        
+        // Initial fade in for elements in viewport
+        setTimeout(fadeInOnScroll, 100);
+      });
+    </script>
   </body>
 </html>
-

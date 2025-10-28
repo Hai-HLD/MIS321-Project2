@@ -1,0 +1,40 @@
+# Admin Login Credentials
+# These are hardcoded admin accounts for testing and demonstration purposes
+
+## Primary Admin Account (ACTIVE)
+Username: admin
+Password: admin123
+User Type: admin
+Status: ✅ FUNCTIONAL - Hardcoded authentication implemented
+
+## Secondary Admin Account (INACTIVE)
+Username: superadmin
+Password: superadmin2024
+User Type: admin
+Status: ❌ NOT IMPLEMENTED - Only primary admin is functional
+
+## Test Admin Account (INACTIVE)
+Username: testadmin
+Password: test123
+User Type: admin
+Status: ❌ NOT IMPLEMENTED - Only primary admin is functional
+
+## Development Admin Account (INACTIVE)
+Username: devadmin
+Password: dev2024
+User Type: admin
+Status: ❌ NOT IMPLEMENTED - Only primary admin is functional
+
+## Emergency Admin Account (INACTIVE)
+Username: emergency
+Password: emergency123
+User Type: admin
+Status: ❌ NOT IMPLEMENTED - Only primary admin is functional
+
+# Notes:
+# - Only the primary admin account (admin/admin123) is currently functional
+# - Additional admin accounts can be added by extending the hardcoded authentication logic
+# - Admin accounts have full system access
+# - Admin accounts can create, edit, and delete users
+# - Admin accounts can access system settings and analytics
+# - Admin accounts can view all user data and performance metrics

@@ -7,17 +7,70 @@ function updateUserTypeLabels() {
   const signupIdLabel = document.getElementById('signupIdLabel');
   const classIdField = document.getElementById('classIdField');
   const signupClassId = document.getElementById('signupClassId');
+  const signupForm = document.getElementById('signupForm');
+  const signupCard = signupForm ? signupForm.closest('.col-md-6') : null;
+  const loginForm = document.getElementById('loginForm');
+  // Find the login card container regardless of its current class
+  const loginCard = loginForm ? loginForm.parentElement.parentElement : null;
+  
+  // Find the "Forgot Password" link
+  const forgotPasswordLink = document.querySelector('a[data-bs-target="#resetPasswordModal"]');
+  
+  console.log('Current user type:', currentUserType);
+  console.log('Login card element:', loginCard);
+  console.log('Signup card element:', signupCard);
   
   if (currentUserType === 'student') {
     loginIdLabel.textContent = 'Student ID';
     signupIdLabel.textContent = 'Student ID';
     classIdField.style.display = 'block';
     signupClassId.required = true;
-  } else {
+    // Show signup form for students
+    if (signupCard) signupCard.style.display = 'block';
+    if (loginCard) {
+      loginCard.classList.remove('col-md-12');
+      loginCard.classList.add('col-md-6');
+      console.log('Set login card to col-md-6 for student');
+    }
+    // Show forgot password link for students
+    if (forgotPasswordLink) forgotPasswordLink.style.display = 'block';
+  } else if (currentUserType === 'teacher') {
     loginIdLabel.textContent = 'Teacher ID';
     signupIdLabel.textContent = 'Teacher ID';
     classIdField.style.display = 'none';
     signupClassId.required = false;
+    // Show signup form for teachers
+    if (signupCard) signupCard.style.display = 'block';
+    if (loginCard) {
+      loginCard.classList.remove('col-md-12');
+      loginCard.classList.add('col-md-6');
+      console.log('Set login card to col-md-6 for teacher');
+    }
+    // Show forgot password link for teachers
+    if (forgotPasswordLink) forgotPasswordLink.style.display = 'block';
+  } else if (currentUserType === 'admin') {
+    loginIdLabel.textContent = 'Admin ID';
+    signupIdLabel.textContent = 'Admin ID';
+    classIdField.style.display = 'none';
+    signupClassId.required = false;
+    // Hide signup form for admins (no account creation)
+    if (signupCard) signupCard.style.display = 'none';
+    // Make login form full width for admin
+    if (loginCard) {
+      loginCard.classList.remove('col-md-6');
+      loginCard.classList.add('col-md-12');
+      console.log('Set login card to col-md-12 for admin');
+    }
+    // Hide forgot password link for admins (hardcoded credentials)
+    if (forgotPasswordLink) forgotPasswordLink.style.display = 'none';
+  }
+}
+
+// Initialize currentUserType from the checked radio button
+function initializeUserType() {
+  const checkedRadio = document.querySelector('input[name="userType"]:checked');
+  if (checkedRadio) {
+    currentUserType = checkedRadio.value;
   }
 }
 
@@ -40,7 +93,32 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
   messageDiv.innerHTML = '<div class="alert alert-info">Logging in...</div>';
   
   try {
-    // Call API to login
+    // Check for hardcoded admin credentials first
+    if (currentUserType === 'admin') {
+      if (id === 'admin' && password === 'admin123') {
+        // Hardcoded admin login successful
+        const userData = {
+          type: 'admin',
+          userId: 'admin',
+          name: 'Administrator',
+          AdminID: 'admin',
+          AdminName: 'Administrator'
+        };
+        
+        window.Auth.setCurrentUser(userData);
+        
+        messageDiv.innerHTML = '<div class="alert alert-success">Admin login successful! Redirecting...</div>';
+        setTimeout(() => {
+          window.location.href = './admin.html';
+        }, 1000);
+        return;
+      } else {
+        messageDiv.innerHTML = '<div class="alert alert-danger">Invalid admin credentials.</div>';
+        return;
+      }
+    }
+    
+    // Call API to login for student/teacher
     const response = await fetch('http://localhost:5000/api/auth/login', {
       method: 'POST',
       headers: {
@@ -110,6 +188,12 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
   
   if (!name || !id || !password) {
     messageDiv.innerHTML = '<div class="alert alert-danger">Please fill in all fields.</div>';
+    return;
+  }
+  
+  // Prevent admin registration
+  if (currentUserType === 'admin') {
+    messageDiv.innerHTML = '<div class="alert alert-danger">Admin accounts cannot be registered through this form.</div>';
     return;
   }
   
@@ -275,11 +359,23 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Initialize labels on page load
+document.addEventListener('DOMContentLoaded', function() {
+  initializeUserType();
+  updateUserTypeLabels();
+});
+
+// Also initialize immediately in case DOMContentLoaded already fired
+initializeUserType();
+updateUserTypeLabels();
+
 // Check if already logged in - automatically redirect
 if (window.Auth.isLoggedIn()) {
   const user = window.Auth.getCurrentUser();
   if (user && user.type === 'teacher') {
     window.location.href = './teacher-dashboard.html';
+  } else if (user && user.type === 'admin') {
+    window.location.href = './admin.html';
   } else {
     window.location.href = './profile.html';
   }

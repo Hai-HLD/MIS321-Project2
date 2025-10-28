@@ -24,8 +24,13 @@ namespace MinigamesAPI.Controllers
         {
             try
             {
+                if (request == null)
+                {
+                    return BadRequest(new { message = "Request body is required." });
+                }
+
                 _logger.LogInformation("UpdateScore called for student {StudentId} with GameNumber {GameNumber} and Score {Score}", 
-                    studentId, request?.GameNumber, request?.Score);
+                    studentId, request.GameNumber, request.Score);
                 
                 var student = await _context.Students.FindAsync(studentId);
                 if (student == null)
@@ -117,6 +122,7 @@ namespace MinigamesAPI.Controllers
 
                 // Always update the timestamp to track student activity
                 studentScores.UpdatedAt = DateTime.UtcNow;
+                student.UpdatedAt = DateTime.UtcNow; // Also update student's last activity
                 await _context.SaveChangesAsync();
                 _logger.LogInformation("Score record updated (timestamp refreshed)");
 
@@ -134,7 +140,11 @@ namespace MinigamesAPI.Controllers
                         ScoreGame3 = studentScores.Game3Score,
                         ScoreGame4 = studentScores.Game4Score,
                         ScoreGame5 = studentScores.Game5Score,
-                        LastUpdated = studentScores.UpdatedAt
+                        LastUpdated = (student.UpdatedAt ?? student.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                        ClassId = await _context.InClasses
+                            .Where(ic => ic.StudentID == student.StudentID)
+                            .Select(ic => ic.ClassID)
+                            .FirstOrDefaultAsync()
                     }
                 });
             }
@@ -170,7 +180,11 @@ namespace MinigamesAPI.Controllers
                     ScoreGame3 = s.StudentScores?.Game3Score ?? 0,
                     ScoreGame4 = s.StudentScores?.Game4Score ?? 0,
                     ScoreGame5 = s.StudentScores?.Game5Score ?? 0,
-                    LastUpdated = s.StudentScores?.UpdatedAt
+                    LastUpdated = (s.UpdatedAt ?? s.CreatedAt).ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                    ClassId = _context.InClasses
+                        .Where(ic => ic.StudentID == s.StudentID)
+                        .Select(ic => ic.ClassID)
+                        .FirstOrDefault()
                 }).ToList();
 
                 // Sort by the specific game score

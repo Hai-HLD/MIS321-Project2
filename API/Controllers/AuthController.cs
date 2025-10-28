@@ -84,7 +84,9 @@ namespace MinigamesAPI.Controllers
                     {
                         StudentID = request.UserId,
                         StudentName = request.Name,
-                        StudentPassword = BCrypt.Net.BCrypt.HashPassword(request.Password)
+                        StudentPassword = BCrypt.Net.BCrypt.HashPassword(request.Password),
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
                     };
 
                     _context.Students.Add(student);
@@ -109,7 +111,7 @@ namespace MinigamesAPI.Controllers
                         {
                             StudentID = request.UserId,
                             TeacherID = teacherWithClass.TeacherID,
-                            ClassID = request.ClassID,
+                            ClassID = request.ClassID ?? string.Empty,
                             CreatedAt = DateTime.UtcNow
                         };
                         _context.InClasses.Add(inClass);
@@ -151,7 +153,9 @@ namespace MinigamesAPI.Controllers
                         TeacherID = request.UserId,
                         TeacherName = request.Name,
                         TeacherPassword = BCrypt.Net.BCrypt.HashPassword(request.Password),
-                        ClassID = classId
+                        ClassID = classId,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
                     };
 
                     _context.Teachers.Add(teacher);
@@ -200,6 +204,9 @@ namespace MinigamesAPI.Controllers
                         return Unauthorized(new { message = "Invalid credentials." });
                     }
 
+                    // Update last login time
+                    student.UpdatedAt = DateTime.UtcNow;
+
                     // Ensure student has a StudentScores record
                     if (student.StudentScores == null)
                     {
@@ -213,8 +220,9 @@ namespace MinigamesAPI.Controllers
                             Game5Score = 0
                         };
                         _context.StudentScores.Add(student.StudentScores);
-                        await _context.SaveChangesAsync();
                     }
+
+                    await _context.SaveChangesAsync();
 
                     return Ok(new UserResponse
                     {
@@ -235,6 +243,10 @@ namespace MinigamesAPI.Controllers
                     {
                         return Unauthorized(new { message = "Invalid credentials." });
                     }
+
+                    // Update last login time
+                    teacher.UpdatedAt = DateTime.UtcNow;
+                    await _context.SaveChangesAsync();
 
                     return Ok(new UserResponse
                     {

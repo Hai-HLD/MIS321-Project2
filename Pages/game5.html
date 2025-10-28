@@ -15,16 +15,51 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
+    <link rel="stylesheet" href="../styles/gabby-design.css" />
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <style>
+      .game-header-card {
+        background: var(--primary-gradient);
+        color: white;
+        border: none;
+        border-radius: 15px;
+      }
+      
+      .btn-game-primary {
+        background: var(--primary-gradient);
+        border: none;
+        color: white;
+      }
+      
+      .btn-game-primary:hover {
+        background: var(--primary-gradient);
+        color: white;
+        opacity: 0.9;
+      }
+      
+      .btn-outline-game-primary {
+        border: 2px solid;
+        border-image: var(--primary-gradient) 1;
+        color: #667eea;
+        background: transparent;
+      }
+      
+      .btn-outline-game-primary:hover {
+        background: var(--primary-gradient);
+        color: white;
+        border-color: transparent;
+      }
+    </style>
   </head>
   <body>
 
     <!-- Back Button -->
     <div class="container">
       <div class="d-flex justify-content-end pt-3">
-        <a href="./game.html" class="btn btn-outline-primary">
+        <a href="./game.html" class="btn btn-outline-game-primary">
           ← Back to Games
         </a>
       </div>
@@ -35,7 +70,7 @@
       <!-- Game Header -->
       <div class="row mb-4">
         <div class="col-12">
-          <div class="card bg-primary text-white">
+          <div class="card game-header-card">
             <div class="card-body py-3">
               <div class="row align-items-center">
                 <div class="col-md-4">

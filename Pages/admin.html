@@ -1,0 +1,743 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard - Educational Minigames</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+      crossorigin="anonymous"
+    />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../styles/main.css" />
+    <link rel="stylesheet" href="../styles/gabby-design.css" />
+    
+    <style>
+      .admin-header {
+        background: linear-gradient(135deg, #dc3545 0%, #6f42c1 100%);
+        color: white;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+      }
+      
+      .admin-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid #dc3545;
+        transition: transform 0.2s;
+        margin-bottom: 1rem;
+      }
+      
+      .admin-card:hover {
+        transform: translateY(-2px);
+      }
+      
+      .admin-card.success {
+        border-left-color: #198754;
+      }
+      
+      .admin-card.warning {
+        border-left-color: #ffc107;
+      }
+      
+      .admin-card.info {
+        border-left-color: #0dcaf0;
+      }
+      
+      .admin-card.primary {
+        border-left-color: #0d6efd;
+      }
+      
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: #dc3545;
+      }
+      
+      .stat-label {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+      
+      .user-card {
+        background: white;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-left: 3px solid #dc3545;
+      }
+      
+      .user-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+      }
+      
+      .user-card.student {
+        border-left-color: #0d6efd;
+      }
+      
+      .user-card.teacher {
+        border-left-color: #198754;
+      }
+      
+      .user-card.admin {
+        border-left-color: #dc3545;
+      }
+      
+      .search-box {
+        border-radius: 25px;
+        border: 2px solid #e9ecef;
+        padding: 0.5rem 1rem;
+        transition: border-color 0.2s;
+      }
+      
+      .search-box:focus {
+        border-color: #dc3545;
+        box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+      }
+      
+      .filter-tabs {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+      }
+      
+      .filter-tab {
+        background: none;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        margin: 0 0.25rem;
+        transition: all 0.2s;
+      }
+      
+      .filter-tab.active {
+        background: #dc3545;
+        color: white;
+      }
+      
+      .action-btn {
+        margin: 0 2px;
+      }
+      
+      .system-status {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: bold;
+      }
+      
+      .status-online {
+        background: #d1edff;
+        color: #0c63e4;
+      }
+      
+      .status-offline {
+        background: #f8d7da;
+        color: #721c24;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="./home.html">
+          <i class="fas fa-shield-alt me-2"></i>BridgeEd
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="./home.html">Home</a>
+            </li>
+            <li class="nav-item" id="gamesNavItem">
+              <a class="nav-link" href="./game.html">Games</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./ranking.html">Rankings</a>
+            </li>
+            <li class="nav-item" id="profileNavItem" style="display: none;">
+              <a class="nav-link" href="./profile.html" id="profileLink">Profile</a>
+            </li>
+            <li class="nav-item" id="teacherDashboardNavItem" style="display: none;">
+              <a class="nav-link" href="./teacher-dashboard.html" id="teacherDashboardLink">Teacher Dashboard</a>
+            </li>
+            <li class="nav-item" id="adminNavItem" style="display: none;">
+              <a class="nav-link active" href="./admin.html" id="adminLink">Admin</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="./login.html" id="authLink">Login</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Admin Header -->
+    <div class="admin-header" style="margin-top: 80px;">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <h1 class="display-5 mb-2">
+              <i class="fas fa-shield-alt me-3"></i>Admin Dashboard
+            </h1>
+            <p class="lead mb-0">System administration and user management</p>
+          </div>
+          <div class="col-md-4 text-end">
+            <div class="system-status status-online">
+              <i class="fas fa-circle me-1"></i>System Online
+            </div>
+            <div class="mt-2">
+              <small class="text-muted">
+                <i class="fas fa-clock me-1"></i>Times shown in: <span id="userTimezone"></span>
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+      <!-- Loading Indicator -->
+      <div id="loadingIndicator" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3">Loading admin dashboard...</p>
+        <div id="debugInfo" class="mt-3 text-muted small"></div>
+      </div>
+      
+      <!-- System Statistics -->
+      <div class="row mb-4" id="mainContent" style="display: none;">
+        <div class="col-12">
+          <div class="d-flex flex-wrap justify-content-between gap-3">
+            <div class="admin-card flex-fill" style="min-width: 200px;">
+              <div class="stat-number" id="totalUsers">-</div>
+              <div class="stat-label">Total Users</div>
+            </div>
+            <div class="admin-card success flex-fill" style="min-width: 200px;">
+              <div class="stat-number" id="totalStudents">-</div>
+              <div class="stat-label">Students</div>
+            </div>
+            <div class="admin-card warning flex-fill" style="min-width: 200px;">
+              <div class="stat-number" id="totalTeachers">-</div>
+              <div class="stat-label">Teachers</div>
+            </div>
+            <div class="admin-card info flex-fill" style="min-width: 200px;">
+              <div class="stat-number" id="totalGames">-</div>
+              <div class="stat-label">Games Played</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- User Management -->
+      <div class="row">
+        <div class="col-12">
+          <div class="admin-card">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h5 class="mb-0">User Management</h5>
+              <div class="d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm" onclick="refreshData()" title="Refresh Data">
+                  <i class="fas fa-sync me-1"></i>Refresh
+                </button>
+                <input type="text" class="form-control search-box" id="userSearch" placeholder="Search users..." style="width: 200px;">
+                <div class="filter-tabs">
+                  <button class="filter-tab active" data-filter="all">All</button>
+                  <button class="filter-tab" data-filter="students">Students</button>
+                  <button class="filter-tab" data-filter="teachers">Teachers</button>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Students Table -->
+            <div id="studentsTable" style="display: none;">
+              <h6 class="mb-3"><i class="fas fa-user-graduate me-2"></i>Students</h6>
+              <div class="table-responsive">
+                <table class="table table-hover" style="table-layout: fixed; width: 100%;">
+                  <thead class="table-dark">
+                    <tr>
+                      <th style="width: 20%;">Name</th>
+                      <th style="width: 15%;">Student ID</th>
+                      <th style="width: 15%;">Class Code</th>
+                      <th style="width: 15%;">Total Score</th>
+                      <th style="width: 20%;">Last Active</th>
+                      <th style="width: 15%;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="studentsTableBody">
+                    <!-- Students will be populated here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Teachers Table -->
+            <div id="teachersTable" style="display: none;">
+              <h6 class="mb-3"><i class="fas fa-chalkboard-teacher me-2"></i>Teachers</h6>
+              <div class="table-responsive">
+                <table class="table table-hover" style="table-layout: fixed; width: 100%;">
+                  <thead class="table-dark">
+                    <tr>
+                      <th style="width: 20%;">Name</th>
+                      <th style="width: 15%;">Teacher ID</th>
+                      <th style="width: 15%;">Class Code</th>
+                      <th style="width: 15%;">Student Count</th>
+                      <th style="width: 20%;">Last Active</th>
+                      <th style="width: 15%;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="teachersTableBody">
+                    <!-- Teachers will be populated here -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- All Users View -->
+            <div id="allUsersView">
+              <!-- Both tables will be shown here -->
+            </div>
+
+            <div id="usersList">
+              <!-- Fallback for no users -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS bundle -->
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Custom JS -->
+    <script src="../scripts/main.js"></script>
+    <script src="../scripts/auth.js"></script>
+    
+    <script>
+      // Admin Dashboard JavaScript
+      let allUsers = [];
+      let filteredUsers = [];
+      let currentFilter = 'all';
+
+      document.addEventListener('DOMContentLoaded', function() {
+        console.log('Admin page loaded');
+        
+        // Set API URL if not already set
+        if (!window.API_URL) {
+          window.API_URL = 'http://localhost:5000/api';
+        }
+        
+        // Show debug info
+        const debugInfo = document.getElementById('debugInfo');
+        if (debugInfo) {
+          debugInfo.innerHTML = 'Loading admin dashboard...';
+        }
+        
+        console.log('Initializing admin dashboard');
+        initAdminDashboard();
+        
+        // Update navbar
+        setTimeout(() => {
+          if (window.Auth && window.Auth.updateNavbar) {
+            window.Auth.updateNavbar();
+          }
+        }, 100);
+      });
+
+      async function initAdminDashboard() {
+        try {
+          console.log('Initializing admin dashboard...');
+          
+          // Set timezone display
+          const timezoneElement = document.getElementById('userTimezone');
+          if (timezoneElement) {
+            timezoneElement.textContent = getUserTimezone();
+          }
+          
+          await loadAllUsers();
+          updateSystemStats();
+          renderUsers();
+          setupEventListeners();
+          
+          // Hide loading indicator and show main content
+          const loadingIndicator = document.getElementById('loadingIndicator');
+          const mainContent = document.getElementById('mainContent');
+          if (loadingIndicator) loadingIndicator.style.display = 'none';
+          if (mainContent) mainContent.style.display = 'block';
+          
+          console.log('Admin dashboard initialized successfully');
+        } catch (error) {
+          console.error('Error initializing admin dashboard:', error);
+          
+          // Hide loading indicator
+          const loadingIndicator = document.getElementById('loadingIndicator');
+          if (loadingIndicator) loadingIndicator.style.display = 'none';
+          
+          // Show error message to user
+          const container = document.querySelector('.container');
+          if (container) {
+            container.innerHTML = `
+              <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Error Loading Admin Dashboard</h4>
+                <p>There was an error loading the admin dashboard. Please check the console for details.</p>
+                <hr>
+                <p class="mb-0">Make sure the API server is running and you are properly authenticated.</p>
+                <button class="btn btn-outline-danger mt-2" onclick="location.reload()">Retry</button>
+              </div>
+            `;
+          }
+        }
+      }
+
+      async function loadAllUsers() {
+        try {
+          console.log('Loading users from API...');
+          // Load all users from individual endpoints
+          const studentsResponse = await fetch(`${window.API_URL}/profile/students`);
+          const students = studentsResponse.ok ? await studentsResponse.json() : [];
+          
+          const teachersResponse = await fetch(`${window.API_URL}/profile/teachers`);
+          const teachers = teachersResponse.ok ? await teachersResponse.json() : [];
+          
+          allUsers = [
+            ...students.map(s => ({ ...s, userType: 'student' })),
+            ...teachers.map(t => ({ ...t, userType: 'teacher' }))
+          ];
+          
+          filteredUsers = [...allUsers];
+          console.log('Loaded users from individual endpoints:', allUsers);
+          
+          // If no users found, show a message
+          if (allUsers.length === 0) {
+            console.log('No users found in database');
+            allUsers = [];
+            filteredUsers = [];
+          }
+        } catch (error) {
+          console.error('Error loading users from database:', error);
+          allUsers = [];
+          filteredUsers = [];
+        }
+      }
+
+      function updateSystemStats() {
+        const students = allUsers.filter(u => u.userType === 'student');
+        const teachers = allUsers.filter(u => u.userType === 'teacher');
+        
+        document.getElementById('totalUsers').textContent = allUsers.length;
+        document.getElementById('totalStudents').textContent = students.length;
+        document.getElementById('totalTeachers').textContent = teachers.length;
+        
+        // Calculate total games played (count games with scores > 0)
+        const totalGames = students.reduce((sum, student) => {
+          let gamesPlayed = 0;
+          if (student.scoreGame1 > 0) gamesPlayed++;
+          if (student.scoreGame2 > 0) gamesPlayed++;
+          if (student.scoreGame3 > 0) gamesPlayed++;
+          if (student.scoreGame4 > 0) gamesPlayed++;
+          if (student.scoreGame5 > 0) gamesPlayed++;
+          return sum + gamesPlayed;
+        }, 0);
+        document.getElementById('totalGames').textContent = totalGames;
+      }
+
+      function formatDateTime(utcDateTimeString) {
+        try {
+          // Ensure the string is treated as UTC by adding 'Z' if not present
+          let utcString = utcDateTimeString;
+          if (!utcString.endsWith('Z') && !utcString.includes('+') && !utcString.includes('-', 10)) {
+            utcString = utcString + 'Z';
+          }
+          
+          // Parse the UTC datetime string
+          const utcDate = new Date(utcString);
+          
+          // Check if the date is valid
+          if (isNaN(utcDate.getTime())) {
+            return 'Invalid Date';
+          }
+          
+          // Format with timezone information
+          const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            timeZoneName: 'short'
+          };
+          
+          return utcDate.toLocaleString('en-US', options);
+        } catch (error) {
+          console.error('Error formatting datetime:', error);
+          return 'Invalid Date';
+        }
+      }
+
+      function getUserTimezone() {
+        try {
+          return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        } catch (error) {
+          return 'UTC';
+        }
+      }
+
+      function renderUsers() {
+        const studentsTable = document.getElementById('studentsTable');
+        const teachersTable = document.getElementById('teachersTable');
+        const allUsersView = document.getElementById('allUsersView');
+        const usersList = document.getElementById('usersList');
+        
+        if (!studentsTable || !teachersTable || !allUsersView || !usersList) return;
+
+        if (filteredUsers.length === 0) {
+          studentsTable.style.display = 'none';
+          teachersTable.style.display = 'none';
+          allUsersView.style.display = 'none';
+          usersList.innerHTML = `
+            <div class="text-center py-5">
+              <i class="fas fa-users fa-3x text-muted mb-3"></i>
+              <h5 class="text-muted">No users found</h5>
+              <p class="text-muted">There are no users in the database yet.</p>
+            </div>
+          `;
+          usersList.style.display = 'block';
+          return;
+        }
+
+        // Hide fallback
+        usersList.style.display = 'none';
+
+        // Separate students and teachers
+        const students = filteredUsers.filter(user => user.userType === 'student');
+        const teachers = filteredUsers.filter(user => user.userType === 'teacher');
+
+        // Render students table
+        renderStudentsTable(students);
+        
+        // Render teachers table
+        renderTeachersTable(teachers);
+
+        // Show appropriate tables based on current filter
+        const activeFilter = document.querySelector('.filter-tab.active')?.dataset.filter;
+        
+        if (activeFilter === 'students') {
+          studentsTable.style.display = 'block';
+          teachersTable.style.display = 'none';
+          allUsersView.style.display = 'none';
+        } else if (activeFilter === 'teachers') {
+          studentsTable.style.display = 'none';
+          teachersTable.style.display = 'block';
+          allUsersView.style.display = 'none';
+        } else {
+          // Show both tables for 'all' filter
+          studentsTable.style.display = 'block';
+          teachersTable.style.display = 'block';
+          allUsersView.style.display = 'none';
+        }
+      }
+
+      function renderStudentsTable(students) {
+        const tbody = document.getElementById('studentsTableBody');
+        if (!tbody) return;
+
+        if (students.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-muted py-3">
+                <i class="fas fa-user-graduate me-2"></i>No students found
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        let html = '';
+        students.forEach(student => {
+          const lastActive = student.lastUpdated ? formatDateTime(student.lastUpdated) : 'Never';
+          const totalScore = (student.scoreGame1 || 0) + (student.scoreGame2 || 0) + 
+                           (student.scoreGame3 || 0) + (student.scoreGame4 || 0) + (student.scoreGame5 || 0);
+          
+          html += `
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-user-graduate me-2 text-primary"></i>
+                  <strong>${student.name || student.studentName}</strong>
+                </div>
+              </td>
+              <td><code>${student.userId || student.studentID}</code></td>
+              <td>
+                ${student.classId || 'N/A'}
+              </td>
+              <td>
+                ${totalScore}
+              </td>
+              <td>
+                <small class="text-muted">${lastActive}</small>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-primary" onclick="editUser('${student.userId || student.studentID}')" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" onclick="deleteUser('${student.userId || student.studentID}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+      }
+
+      function renderTeachersTable(teachers) {
+        const tbody = document.getElementById('teachersTableBody');
+        if (!tbody) return;
+
+        if (teachers.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="6" class="text-center text-muted py-3">
+                <i class="fas fa-chalkboard-teacher me-2"></i>No teachers found
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        let html = '';
+        teachers.forEach(teacher => {
+          const lastActive = teacher.lastUpdated ? formatDateTime(teacher.lastUpdated) : 'Never';
+          
+          // Count students for this teacher
+          const studentCount = allUsers.filter(user => 
+            user.userType === 'student' && user.classId === teacher.classId
+          ).length;
+          
+          html += `
+            <tr>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-chalkboard-teacher me-2 text-success"></i>
+                  <strong>${teacher.name || teacher.teacherName}</strong>
+                </div>
+              </td>
+              <td><code>${teacher.userId || teacher.teacherID}</code></td>
+              <td>
+                ${teacher.classId || 'N/A'}
+              </td>
+              <td>
+                ${studentCount}
+              </td>
+              <td>
+                <small class="text-muted">${lastActive}</small>
+              </td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-primary" onclick="editUser('${teacher.userId || teacher.teacherID}')" title="Edit">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" onclick="deleteUser('${teacher.userId || teacher.teacherID}')" title="Delete">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        });
+
+        tbody.innerHTML = html;
+      }
+
+      function setupEventListeners() {
+        // Search functionality
+        const searchBox = document.getElementById('userSearch');
+        if (searchBox) {
+          searchBox.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            filteredUsers = allUsers.filter(user => {
+              const name = (user.name || user.studentName || user.teacherName || '').toLowerCase();
+              const id = (user.userId || user.studentID || user.teacherID || '').toLowerCase();
+              return name.includes(searchTerm) || id.includes(searchTerm);
+            });
+            renderUsers();
+          });
+        }
+
+        // Filter tabs
+        const filterTabs = document.querySelectorAll('.filter-tab');
+        filterTabs.forEach(tab => {
+          tab.addEventListener('click', function() {
+            filterTabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            currentFilter = this.dataset.filter;
+            
+            switch(currentFilter) {
+              case 'students':
+                filteredUsers = allUsers.filter(u => u.userType === 'student');
+                break;
+              case 'teachers':
+                filteredUsers = allUsers.filter(u => u.userType === 'teacher');
+                break;
+              default:
+                filteredUsers = [...allUsers];
+            }
+            
+            renderUsers();
+          });
+        });
+      }
+
+      function editUser(userId) {
+        alert(`Edit user functionality for ${userId} would be implemented here`);
+      }
+
+      function deleteUser(userId) {
+        if (confirm(`Are you sure you want to delete user ${userId}?`)) {
+          alert(`Delete user functionality for ${userId} would be implemented here`);
+        }
+      }
+
+      function refreshData() {
+        initAdminDashboard();
+      }
+    </script>
+  </body>
+</html>

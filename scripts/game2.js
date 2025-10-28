@@ -604,7 +604,29 @@ async function saveScore(finalScore) {
   const messageDiv = document.getElementById('saveScoreMessage');
   
   try {
-    // Check if student is logged in
+    // Check if user is logged in and get user type
+    const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
+    
+    if (!currentUser) {
+      messageDiv.innerHTML = `
+        <div class="alert alert-warning">
+          <small>Please log in to save your score!</small>
+        </div>
+      `;
+      return;
+    }
+
+    // Show admin-specific message
+    if (currentUser.type === 'admin') {
+      messageDiv.innerHTML = `
+        <div class="alert alert-info">
+          <small>Admin playing - Score: ${finalScore} (not saved)</small>
+        </div>
+      `;
+      return;
+    }
+
+    // Check if student is logged in (for non-admin users)
     if (!window.GameProgress || !window.GameProgress.isStudentLoggedIn()) {
       messageDiv.innerHTML = `
         <div class="alert alert-warning">

@@ -3,11 +3,13 @@
 // Display current user's profile
 async function displayCurrentUserProfile() {
   const profileDisplay = document.getElementById('profileDisplay');
+  const profileDisplayBody = document.getElementById('profileDisplayBody');
   const notLoggedInMessage = document.getElementById('notLoggedInMessage');
   
   // Check if user is logged in
   if (!window.Auth.isLoggedIn()) {
     profileDisplay.style.display = 'none';
+    profileDisplayBody.style.display = 'none';
     notLoggedInMessage.style.display = 'block';
     return;
   }
@@ -26,16 +28,9 @@ async function displayCurrentUserProfile() {
         currentUser = targetUser; // Use target user's data for display
         // Update page title to show it's viewing another user
         document.title = `${targetUser.name}'s Profile - BridgeEd`;
-        const profileTitle = document.querySelector('h1');
+        const profileTitle = document.getElementById('profileTitle');
         if (profileTitle) {
-          profileTitle.textContent = `${targetUser.name}'s Profile`;
-          // Add back button
-          profileTitle.innerHTML = `
-            <a href="./teacher-dashboard.html" class="btn btn-outline-secondary btn-sm me-3">
-              ← Back to Dashboard
-            </a>
-            ${targetUser.name}'s Profile
-          `;
+          profileTitle.innerHTML = `<span class="text-gradient-stem">Student Profile</span>`;
         }
       }
     } catch (error) {
@@ -50,6 +45,7 @@ async function displayCurrentUserProfile() {
         </div>
       `;
       profileDisplay.style.display = 'none';
+      profileDisplayBody.style.display = 'none';
       return;
     }
   }
@@ -100,11 +96,13 @@ async function displayCurrentUserProfile() {
     document.getElementById('score4').textContent = user.scoreGame4 || 0;
     document.getElementById('score5').textContent = user.scoreGame5 || 0;
     
-    // Show profile
+    // Show profile sections
     profileDisplay.style.display = 'block';
+    profileDisplayBody.style.display = 'block';
   } catch (error) {
     console.error('Error displaying profile:', error);
     profileDisplay.style.display = 'none';
+    profileDisplayBody.style.display = 'none';
     notLoggedInMessage.style.display = 'block';
     notLoggedInMessage.innerHTML = `
       <h5 class="alert-heading">Error</h5>
@@ -116,6 +114,13 @@ async function displayCurrentUserProfile() {
 
 // Load profile on page load
 document.addEventListener('DOMContentLoaded', () => {
+  // Debug: Check if profile title exists
+  const profileTitle = document.getElementById('profileTitle');
+  console.log('Profile title element:', profileTitle);
+  if (profileTitle) {
+    console.log('Profile title text:', profileTitle.textContent);
+  }
+  
   displayCurrentUserProfile();
 });
 
