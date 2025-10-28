@@ -12,6 +12,12 @@ async function saveGameProgress(gameId, score, level = null) {
       return false;
     }
 
+    // Prevent admin scores from being saved
+    if (currentUser.type === 'admin') {
+      console.log('Admin playing game - score not saved');
+      return false;
+    }
+
     // Call API to update score
     const requestData = {
       GameNumber: gameId,
@@ -95,7 +101,8 @@ async function getAllGameProgress() {
 function isStudentLoggedIn() {
   try {
     const currentUser = window.Auth.getCurrentUser();
-    return currentUser && currentUser.userId;
+    // Return false if no user, or if user is admin (admins can't save scores)
+    return currentUser && currentUser.userId && currentUser.type !== 'admin';
   } catch (error) {
     return false;
   }

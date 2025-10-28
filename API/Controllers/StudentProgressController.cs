@@ -39,7 +39,9 @@ namespace MinigamesAPI.Controllers
                         ScoreGame3 = ic.Student.StudentScores != null ? ic.Student.StudentScores.Game3Score : 0,
                         ScoreGame4 = ic.Student.StudentScores != null ? ic.Student.StudentScores.Game4Score : 0,
                         ScoreGame5 = ic.Student.StudentScores != null ? ic.Student.StudentScores.Game5Score : 0,
-                        LastUpdated = ic.Student.StudentScores != null ? ic.Student.StudentScores.UpdatedAt : null
+                        LastUpdated = ic.Student.StudentScores != null ? 
+                            ic.Student.StudentScores.UpdatedAt.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") : 
+                            ic.Student.CreatedAt.ToString("yyyy-MM-ddTHH:mm:ss.fffZ")
                     })
                     .ToListAsync();
 

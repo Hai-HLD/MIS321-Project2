@@ -15,12 +15,40 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
+    <link rel="stylesheet" href="../styles/gabby-design.css" />
+    
+    <style>
+      .btn-game-danger {
+        background: var(--danger-gradient);
+        border: none;
+        color: white;
+      }
+      
+      .btn-game-danger:hover {
+        background: var(--danger-gradient);
+        color: white;
+        opacity: 0.9;
+      }
+      
+      .btn-outline-game-danger {
+        border: 2px solid;
+        border-image: var(--danger-gradient) 1;
+        color: #fa709a;
+        background: transparent;
+      }
+      
+      .btn-outline-game-danger:hover {
+        background: var(--danger-gradient);
+        color: white;
+        border-color: transparent;
+      }
+    </style>
   </head>
   <body>
     <!-- Back Button -->
     <div class="container">
       <div class="d-flex justify-content-end pt-3">
-        <a href="./game.html" class="btn btn-outline-primary">
+        <a href="./game.html" class="btn btn-outline-game-danger">
           ← Back to Games
         </a>
       </div>
@@ -29,7 +57,7 @@
     <!-- Main Content -->
     <div class="container py-4">
       <div id="titleSection">
-        <h1 class="text-center mb-4">Labyrinth of Lies</h1>
+        <h1 class="text-center mb-4" style="background: var(--danger-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Labyrinth of Lies</h1>
         <p class="text-center text-secondary mb-5">
           Navigate through a maze of truth and lies. Can you find the path through this madness?
         </p>
@@ -39,8 +67,8 @@
       <div class="row justify-content-center mb-5" id="menuButtons">
         <div class="col-lg-6">
           <div class="d-grid gap-3">
-            <button class="btn btn-primary btn-lg" id="playBtn">Play</button>
-            <button class="btn btn-outline-primary btn-lg" id="pastResultsBtn">Past Results</button>
+            <button class="btn btn-game-danger btn-lg" id="playBtn">Play</button>
+            <button class="btn btn-outline-game-danger btn-lg" id="pastResultsBtn">Past Results</button>
             <button class="btn btn-outline-secondary btn-lg" id="howToPlayBtn">How to Play</button>
           </div>
         </div>
@@ -51,7 +79,7 @@
         <div class="row justify-content-center">
           <div class="col-lg-10">
             <!-- Game Header -->
-            <div class="card mb-4 bg-dark text-white">
+            <div class="card mb-4" style="background: var(--danger-gradient); color: white;">
               <div class="card-body">
                 <div class="row align-items-center">
                   <div class="col-md-4">
@@ -115,7 +143,7 @@
                 <div class="row mb-3">
                   <div class="col-6">
                     <h6 class="text-muted mb-1">Rooms (×10 pts)</h6>
-                    <div class="display-6 text-primary" id="roomsCompleted">0</div>
+                    <div class="display-6 text-danger" id="roomsCompleted">0</div>
                   </div>
                   <div class="col-6">
                     <h6 class="text-muted mb-1">Time Bonus (×5 pts)</h6>
@@ -125,7 +153,7 @@
                 <hr class="my-2">
                 <div class="mb-3">
                   <h6 class="text-muted mb-1">Current Score</h6>
-                  <div class="display-4 text-primary" id="currentScore">0</div>
+                  <div class="display-4 text-danger" id="currentScore">0</div>
                   <div id="newHighScoreMessage" style="display: none;">
                     <h5 class="text-warning mt-1 mb-0">New High Score!</h5>
                   </div>
@@ -135,7 +163,7 @@
                   <div class="display-5 text-warning" id="highScore">0</div>
                 </div>
                 <div class="d-grid gap-2 mt-3">
-                  <button class="btn btn-primary" id="playAgainBtn">Play Again</button>
+                  <button class="btn btn-game-danger" id="playAgainBtn">Play Again</button>
                   <button class="btn btn-outline-secondary" id="backToMenuBtn">Back to Menu</button>
                 </div>
               </div>
@@ -156,7 +184,7 @@
           </div>
           <div class="modal-body text-center py-4">
             <h6 class="text-muted mb-3">Your Highest Score</h6>
-            <div class="display-1 text-primary mb-3" id="highestScore">0</div>
+            <div class="display-1 text-danger mb-3" id="highestScore">0</div>
             <p class="text-secondary" id="scoreMessage">Play the game to set your first score!</p>
           </div>
           <div class="modal-footer">

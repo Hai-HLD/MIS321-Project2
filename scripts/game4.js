@@ -396,6 +396,26 @@ function backToMenu() {
 // Save score using local progress tracking
 async function saveScore(score) {
   try {
+    // Check if user is logged in and get user type
+    const currentUser = window.Auth ? window.Auth.getCurrentUser() : null;
+    
+    if (!currentUser) {
+      console.log('No user logged in - score not saved');
+      return false;
+    }
+
+    // Show admin-specific message
+    if (currentUser.type === 'admin') {
+      console.log(`Admin playing Game 4 - Score: ${score} (not saved)`);
+      return false;
+    }
+
+    // Check if student is logged in (for non-admin users)
+    if (!window.GameProgress || !window.GameProgress.isStudentLoggedIn()) {
+      console.log('Not logged in as student - score not saved');
+      return false;
+    }
+
     // Save progress using the new system
     const success = await window.GameProgress.saveGameProgress(4, score);
     

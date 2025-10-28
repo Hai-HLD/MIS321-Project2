@@ -13,12 +13,19 @@
       crossorigin="anonymous"
     />
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
+    <link rel="stylesheet" href="../styles/gabby-design.css" />
   </head>
   <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
       <div class="container">
         <a class="navbar-brand" href="./home.html">Educational Minigames</a>
         <button
@@ -37,7 +44,7 @@
             <li class="nav-item">
               <a class="nav-link" href="./home.html">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="gamesNavItem">
               <a class="nav-link" href="./game.html">Games</a>
             </li>
             <li class="nav-item">
@@ -49,6 +56,9 @@
             <li class="nav-item" id="teacherDashboardNavItem" style="display: none;">
               <a class="nav-link" href="./teacher-dashboard.html" id="teacherDashboardLink">Teacher Dashboard</a>
             </li>
+            <li class="nav-item" id="adminNavItem" style="display: none;">
+              <a class="nav-link" href="./admin.html" id="adminLink">Admin</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="./login.html" id="authLink">Login</a>
             </li>
@@ -57,70 +67,116 @@
       </div>
     </nav>
 
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-lg-10">
+            <div class="row align-items-center min-vh-20">
+              <div class="col-lg-6">
+                <h1 class="display-4 fw-bold mb-4 fade-in" id="profileTitle">
+                  <span class="text-gradient-stem">My Profile</span>
+                </h1>
+              </div>
+              <div class="col-lg-6 text-end">
+                <div id="profileDisplay" style="display: none;">
+                  <div class="d-flex align-items-center justify-content-end">
+                    <div class="me-4">
+                      <h3 class="mb-1 text-white" id="userName"></h3>
+                      <p class="text-white-50 mb-0">
+                        Student ID: <span id="userId"></span>
+                      </p>
+                    </div>
+                    <div class="profile-avatar">
+                      <span id="userInitial"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Main Content -->
     <div class="container py-5">
       <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <h1 class="mb-4">My Profile</h1>
-
+        <div class="col-lg-10">
           <!-- Profile Display -->
-          <div id="profileDisplay" style="display: none;">
-            <div class="card shadow-sm">
-              <div class="card-body">
-                <div class="d-flex align-items-center mb-4">
-                  <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; font-size: 2rem;">
-                    <span id="userInitial"></span>
+          <div id="profileDisplayBody" style="display: none;">
+            <!-- Game Scores Section -->
+            <div class="row g-4 mb-5">
+              <div class="col-lg-12">
+                <h3 class="text-center mb-4 text-gradient-stem">Game Scores</h3>
+              </div>
+              
+              <!-- Game 1 - Algebra (Primary Gradient) -->
+              <div class="col-lg-4 col-md-6">
+                <div class="game-score-card primary">
+                  <div class="game-score-icon">
+                    <i class="fas fa-calculator"></i>
                   </div>
-                  <div class="ms-4">
-                    <h3 class="mb-1" id="userName"></h3>
-                    <p class="text-muted mb-0">
-                      Student ID: <span id="userId"></span>
-                    </p>
+                  <div class="game-score-content">
+                    <h4 class="game-score-title">Algebra</h4>
+                    <div class="game-score-value" id="score1">0</div>
+                    <div class="game-score-label">points</div>
                   </div>
                 </div>
+              </div>
 
-                <!-- Scores Section -->
-                <h5 class="mb-3">Game Scores</h5>
-                <div class="row g-3">
-                  <div class="col-md-4">
-                    <div class="card bg-light">
-                      <div class="card-body text-center">
-                        <h6 class="card-title">Game 1</h6>
-                        <p class="display-6 mb-0" id="score1">0</p>
-                      </div>
-                    </div>
+              <!-- Game 2 - Science (Success Gradient) -->
+              <div class="col-lg-4 col-md-6">
+                <div class="game-score-card success">
+                  <div class="game-score-icon">
+                    <i class="fas fa-flask"></i>
                   </div>
-                  <div class="col-md-4">
-                    <div class="card bg-light">
-                      <div class="card-body text-center">
-                        <h6 class="card-title">Game 2</h6>
-                        <p class="display-6 mb-0" id="score2">0</p>
-                      </div>
-                    </div>
+                  <div class="game-score-content">
+                    <h4 class="game-score-title">Science</h4>
+                    <div class="game-score-value" id="score2">0</div>
+                    <div class="game-score-label">points</div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="card bg-light">
-                      <div class="card-body text-center">
-                        <h6 class="card-title">Game 3</h6>
-                        <p class="display-6 mb-0" id="score3">0</p>
-                      </div>
-                    </div>
+                </div>
+              </div>
+
+              <!-- Game 3 - Coding (Warning Gradient) -->
+              <div class="col-lg-4 col-md-6">
+                <div class="game-score-card warning">
+                  <div class="game-score-icon">
+                    <i class="fas fa-code"></i>
                   </div>
-                  <div class="col-md-4">
-                    <div class="card bg-light">
-                      <div class="card-body text-center">
-                        <h6 class="card-title">Game 4</h6>
-                        <p class="display-6 mb-0" id="score4">0</p>
-                      </div>
-                    </div>
+                  <div class="game-score-content">
+                    <h4 class="game-score-title">Coding</h4>
+                    <div class="game-score-value" id="score3">0</div>
+                    <div class="game-score-label">points</div>
                   </div>
-                  <div class="col-md-4">
-                    <div class="card bg-light">
-                      <div class="card-body text-center">
-                        <h6 class="card-title">Game 5</h6>
-                        <p class="display-6 mb-0" id="score5">0</p>
-                      </div>
-                    </div>
+                </div>
+              </div>
+
+              <!-- Game 4 - Logic (Danger Gradient) -->
+              <div class="col-lg-4 col-md-6">
+                <div class="game-score-card danger">
+                  <div class="game-score-icon">
+                    <i class="fas fa-brain"></i>
+                  </div>
+                  <div class="game-score-content">
+                    <h4 class="game-score-title">Logic</h4>
+                    <div class="game-score-value" id="score4">0</div>
+                    <div class="game-score-label">points</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Game 5 - Geometry (Primary Gradient) -->
+              <div class="col-lg-4 col-md-6">
+                <div class="game-score-card primary">
+                  <div class="game-score-icon">
+                    <i class="fas fa-shapes"></i>
+                  </div>
+                  <div class="game-score-content">
+                    <h4 class="game-score-title">Geometry</h4>
+                    <div class="game-score-value" id="score5">0</div>
+                    <div class="game-score-label">points</div>
                   </div>
                 </div>
               </div>
@@ -128,10 +184,10 @@
           </div>
 
           <!-- Not Logged In Message -->
-          <div id="notLoggedInMessage" class="alert alert-warning" style="display: none;">
+          <div id="notLoggedInMessage" class="alert alert-warning fade-in" style="display: none;">
             <h5 class="alert-heading">Please Log In</h5>
             <p>You need to be logged in to view your profile.</p>
-            <a href="./login.html" class="btn btn-primary">Go to Login</a>
+            <a href="./login.html" class="btn btn-modern">Go to Login</a>
           </div>
         </div>
       </div>
@@ -148,6 +204,25 @@
     <script src="../scripts/main.js"></script>
     <script src="../scripts/auth.js"></script>
     <script src="../scripts/profile.js"></script>
+    
+    <script>
+      // Fade in animation on scroll
+      function fadeInOnScroll() {
+        const elements = document.querySelectorAll('.fade-in');
+        elements.forEach(element => {
+          const elementTop = element.getBoundingClientRect().top;
+          const elementVisible = 150;
+          
+          if (elementTop < window.innerHeight - elementVisible) {
+            element.classList.add('visible');
+          }
+        });
+      }
+      
+      // Run on page load and scroll
+      document.addEventListener('DOMContentLoaded', fadeInOnScroll);
+      window.addEventListener('scroll', fadeInOnScroll);
+    </script>
   </body>
 </html>
 

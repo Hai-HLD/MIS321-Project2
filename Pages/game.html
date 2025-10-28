@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Games - Educational Minigames</title>
+    <title>Games - BridgeEd</title>
+    <meta name="description" content="Explore our collection of educational minigames covering mathematics, science, programming, and critical thinking skills.">
 
     <!-- Bootstrap CSS -->
     <link
@@ -13,14 +14,23 @@
       crossorigin="anonymous"
     />
 
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
+    <link rel="stylesheet" href="../styles/gabby-design.css" />
   </head>
   <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="./home.html">Educational Minigames</a>
+        <a class="navbar-brand" href="./home.html">
+          <i class="fas fa-graduation-cap me-2"></i>BridgeEd
+        </a>
         <button
           class="navbar-toggler"
           type="button"
@@ -37,7 +47,7 @@
             <li class="nav-item">
               <a class="nav-link" href="./home.html">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="gamesNavItem">
               <a class="nav-link active" href="./game.html">Games</a>
             </li>
             <li class="nav-item">
@@ -49,6 +59,9 @@
             <li class="nav-item" id="teacherDashboardNavItem" style="display: none;">
               <a class="nav-link" href="./teacher-dashboard.html" id="teacherDashboardLink">Teacher Dashboard</a>
             </li>
+            <li class="nav-item" id="adminNavItem" style="display: none;">
+              <a class="nav-link" href="./admin.html" id="adminLink">Admin</a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="./login.html" id="authLink">Login</a>
             </li>
@@ -57,112 +70,159 @@
       </div>
     </nav>
 
-    <!-- Main Content -->
-    <div class="container py-5">
-      <h1 class="text-center mb-5">Educational Minigames</h1>
+    <!-- Hero Section -->
+    <section class="hero-section" style="margin-top: 76px;">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center hero-content">
+            <h1 class="display-4 fw-bold mb-4 fade-in">
+              Educational <span class="text-gradient-stem">Minigames</span>
+            </h1>
+            <p class="lead mb-4 fade-in">
+              Explore our collection of engaging educational games designed to make learning 
+              mathematics, science, programming, and critical thinking fun and interactive.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-      <div class="row g-4">
-        <!-- Game 1 -->
-        <div class="col-md-6 col-lg-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-img-top bg-primary d-flex align-items-center justify-content-center text-white" style="height: 200px; font-size: 3rem;">
-              1
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">Game 1: Algebra Challenge</h5>
-              <p class="card-text flex-grow-1">
-                Test your algebra skills with challenging math problems. Practice equations, solving for variables, and more!
-              </p>
-              <div class="d-grid mt-auto">
-                <a href="./game1.html" class="btn btn-primary">
-                  Play Now
-                </a>
+    <!-- Games Section -->
+    <section class="games-section">
+      <div class="container">
+        <div class="row g-4">
+          <!-- Game 1: Algebra Challenge -->
+          <div class="col-md-6 col-lg-4">
+            <div class="game-card fade-in">
+              <div class="game-header math">
+                <i class="fas fa-calculator game-icon"></i>
+              </div>
+              <div class="game-body">
+                <h5 class="game-title">Algebra Challenge</h5>
+                <p class="game-description">
+                  Test your algebra skills with challenging math problems. Practice equations, 
+                  solving for variables, and more!
+                </p>
+                <div class="d-grid">
+                  <a href="./game1.html" class="btn btn-modern">
+                    <i class="fas fa-play me-2"></i>Play Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Game 2 -->
-        <div class="col-md-6 col-lg-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-img-top bg-success d-flex align-items-center justify-content-center text-white" style="height: 200px; font-size: 3rem;">
-              2
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">Game 2: Science Lab</h5>
-              <p class="card-text flex-grow-1">
-                Test your general science knowledge! Questions cover biology, chemistry, physics, and earth science.
-              </p>
-              <div class="d-grid mt-auto">
-                <a href="./game2.html" class="btn btn-success">
-                  Play Now
-                </a>
+          <!-- Game 2: Science Lab -->
+          <div class="col-md-6 col-lg-4">
+            <div class="game-card fade-in">
+              <div class="game-header science">
+                <i class="fas fa-flask game-icon"></i>
+              </div>
+              <div class="game-body">
+                <h5 class="game-title">Science Lab</h5>
+                <p class="game-description">
+                  Test your general science knowledge! Questions cover biology, 
+                  chemistry, physics, and earth science.
+                </p>
+                <div class="d-grid">
+                  <a href="./game2.html" class="btn btn-modern">
+                    <i class="fas fa-play me-2"></i>Play Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Game 3 -->
-        <div class="col-md-6 col-lg-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-img-top bg-info d-flex align-items-center justify-content-center text-white" style="height: 200px; font-size: 3rem;">
-              3
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">Game 3: Robot Beeper Challenge</h5>
-              <p class="card-text flex-grow-1">
-                Program a robot to collect beepers on a grid. Learn coding fundamentals through visual programming!
-              </p>
-              <div class="d-grid mt-auto">
-                <a href="./game3.html" class="btn btn-info">
-                  Play Now
-                </a>
+          <!-- Game 3: Robot Beeper Challenge -->
+          <div class="col-md-6 col-lg-4">
+            <div class="game-card fade-in">
+              <div class="game-header programming">
+                <i class="fas fa-robot game-icon"></i>
+              </div>
+              <div class="game-body">
+                <h5 class="game-title">Robot Beeper Challenge</h5>
+                <p class="game-description">
+                  Program a robot to collect beepers on a grid. Learn coding 
+                  fundamentals through visual programming!
+                </p>
+                <div class="d-grid">
+                  <a href="./game3.html" class="btn btn-modern">
+                    <i class="fas fa-play me-2"></i>Play Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Game 4 -->
-        <div class="col-md-6 col-lg-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-img-top bg-warning d-flex align-items-center justify-content-center text-white" style="height: 200px; font-size: 3rem;">
-              4
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">Game 4: Labyrinth of Lies</h5>
-              <p class="card-text flex-grow-1">
-                Navigate through a maze of truth and lies. Can you find the path through this madness?
-              </p>
-              <div class="d-grid mt-auto">
-                <a href="./game4.html" class="btn btn-warning">
-                  Play Now
-                </a>
+          <!-- Game 4: Labyrinth of Lies -->
+          <div class="col-md-6 col-lg-4">
+            <div class="game-card fade-in">
+              <div class="game-header logic">
+                <i class="fas fa-puzzle-piece game-icon"></i>
+              </div>
+              <div class="game-body">
+                <h5 class="game-title">Labyrinth of Lies</h5>
+                <p class="game-description">
+                  Navigate through a maze of truth and lies. Can you find the 
+                  path through this madness?
+                </p>
+                <div class="d-grid">
+                  <a href="./game4.html" class="btn btn-modern">
+                    <i class="fas fa-play me-2"></i>Play Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Game 5 -->
-        <div class="col-md-6 col-lg-4">
-          <div class="card h-100 shadow-sm">
-            <div class="card-img-top bg-danger d-flex align-items-center justify-content-center text-white" style="height: 200px; font-size: 3rem;">
-              5
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">Game 5: Geometry Challenge</h5>
-              <p class="card-text flex-grow-1">
-                Climb the ladder by answering geometry questions! Master shapes, areas, perimeters, and angles.
-              </p>
-              <div class="d-grid mt-auto">
-                <a href="./game5.html" class="btn btn-danger">
-                  Play Now
-                </a>
+          <!-- Game 5: Geometry Challenge -->
+          <div class="col-md-6 col-lg-4">
+            <div class="game-card fade-in">
+              <div class="game-header math">
+                <i class="fas fa-shapes game-icon"></i>
+              </div>
+              <div class="game-body">
+                <h5 class="game-title">Geometry Challenge</h5>
+                <p class="game-description">
+                  Climb the ladder by answering geometry questions! Master shapes, 
+                  areas, perimeters, and angles.
+                </p>
+                <div class="d-grid">
+                  <a href="./game5.html" class="btn btn-modern">
+                    <i class="fas fa-play me-2"></i>Play Now
+                  </a>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <!-- Call to Action Section -->
+    <section class="py-5" style="background: var(--primary-gradient); color: white;">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 mx-auto text-center">
+            <h2 class="display-6 fw-bold mb-4 fade-in">
+              Ready to Start Learning?
+            </h2>
+            <p class="lead mb-4 fade-in">
+              Choose any game above to begin your educational journey. 
+              Track your progress and compete with other students!
+            </p>
+            <div class="d-flex gap-3 justify-content-center fade-in" id="ctaButtons">
+              <a href="./login.html" class="btn btn-light btn-lg">
+                <i class="fas fa-user-plus me-2"></i>Sign Up Free
+              </a>
+              <a href="./ranking.html" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-trophy me-2"></i>View Rankings
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- Bootstrap JS bundle -->
     <script
@@ -174,10 +234,65 @@
     <!-- Custom JS -->
     <script src="../scripts/main.js"></script>
     <script src="../scripts/auth.js"></script>
+    
     <script>
-      // Add login check to game links
-      document.addEventListener('DOMContentLoaded', () => {
-        // Add click handlers to all game buttons/links
+      // Fade in animation on scroll
+      function fadeInOnScroll() {
+        const elements = document.querySelectorAll('.fade-in');
+        elements.forEach(element => {
+          const elementTop = element.getBoundingClientRect().top;
+          const elementVisible = 150;
+          
+          if (elementTop < window.innerHeight - elementVisible) {
+            element.classList.add('visible');
+          }
+        });
+      }
+
+      // Navbar scroll effect
+      function navbarScrollEffect() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+          navbar.style.background = 'rgba(255, 255, 255, 0.98)';
+          navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.15)';
+        } else {
+          navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+          navbar.style.boxShadow = '0 2px 20px rgba(0, 0, 0, 0.1)';
+        }
+      }
+
+      // Initialize on page load
+      document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication and show appropriate nav items
+        const currentUser = window.Auth.getCurrentUser();
+        if (currentUser) {
+          document.getElementById('authLink').textContent = 'Logout';
+          document.getElementById('authLink').href = '#';
+          document.getElementById('authLink').onclick = function() {
+            window.Auth.logout();
+            window.location.href = './login.html';
+          };
+          
+          // Hide CTA buttons when logged in
+          const ctaButtons = document.getElementById('ctaButtons');
+          if (ctaButtons) {
+            ctaButtons.style.display = 'none';
+          }
+          
+          if (currentUser.type === 'student') {
+            document.getElementById('profileNavItem').style.display = 'block';
+          } else if (currentUser.type === 'teacher') {
+            document.getElementById('teacherDashboardNavItem').style.display = 'block';
+          }
+        } else {
+          // Ensure buttons are visible when not logged in
+          const ctaButtons = document.getElementById('ctaButtons');
+          if (ctaButtons) {
+            ctaButtons.style.display = 'flex';
+          }
+        }
+
+        // Add login check to game links
         const gameButtons = [
           'a[href="./game1.html"]',
           'a[href="./game2.html"]', 
@@ -198,6 +313,18 @@
             });
           }
         });
+
+        // Initialize animations and effects
+        fadeInOnScroll();
+        
+        // Add scroll event listeners
+        window.addEventListener('scroll', function() {
+          fadeInOnScroll();
+          navbarScrollEffect();
+        });
+        
+        // Initial fade in for elements in viewport
+        setTimeout(fadeInOnScroll, 100);
       });
       
       function showLoginModal() {
@@ -247,4 +374,3 @@
     </script>
   </body>
 </html>
-

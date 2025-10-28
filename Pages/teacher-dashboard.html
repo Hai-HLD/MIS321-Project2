@@ -16,132 +16,20 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
-    
-    <style>
-      .dashboard-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 2rem 0;
-        margin-bottom: 2rem;
-      }
-      
-      .stat-card {
-        background: white;
-        border-radius: 12px;
-        padding: 1.5rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        border-left: 4px solid #0d6efd;
-        transition: transform 0.2s;
-      }
-      
-      .stat-card:hover {
-        transform: translateY(-2px);
-      }
-      
-      .stat-card.success {
-        border-left-color: #198754;
-      }
-      
-      .stat-card.warning {
-        border-left-color: #ffc107;
-      }
-      
-      .stat-card.danger {
-        border-left-color: #dc3545;
-      }
-      
-      .stat-number {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #0d6efd;
-      }
-      
-      .stat-label {
-        color: #6c757d;
-        font-size: 0.9rem;
-        margin-top: 0.5rem;
-      }
-      
-      .student-card {
-        background: white;
-        border-radius: 8px;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        border-left: 3px solid #0d6efd;
-      }
-      
-      .student-card:hover {
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-      }
-      
-      .progress-ring {
-        width: 60px;
-        height: 60px;
-        margin: 0 auto;
-      }
-      
-      
-      .filter-tabs {
-        background: #f8f9fa;
-        border-radius: 8px;
-        padding: 0.5rem;
-        margin-bottom: 1rem;
-      }
-      
-      .filter-tab {
-        background: none;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        margin: 0 0.25rem;
-        transition: all 0.2s;
-      }
-      
-      .filter-tab.active {
-        background: #0d6efd;
-        color: white;
-      }
-      
-      .class-id-code {
-        font-family: 'Courier New', monospace;
-        font-size: 1.5rem;
-        font-weight: bold;
-        color: #0d6efd;
-        background-color: #f8f9fa;
-        padding: 0.5rem 1rem;
-        border-radius: 6px;
-        border: 2px solid #0d6efd;
-        display: inline-block;
-        letter-spacing: 2px;
-      }
-      
-      .class-id-display {
-        display: flex;
-        align-items: center;
-        justify-content: flex-end;
-      }
-      
-      .search-box {
-        border-radius: 25px;
-        border: 2px solid #e9ecef;
-        padding: 0.5rem 1rem;
-        transition: border-color 0.2s;
-      }
-      
-      .search-box:focus {
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-      }
-    </style>
+    <link rel="stylesheet" href="../styles/gabby-design.css" />
   </head>
   <body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-modern fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="./home.html">BridgeEd</a>
+        <a class="navbar-brand" href="./home.html">
+          <i class="fas fa-graduation-cap me-2"></i>BridgeEd
+        </a>
         <button
           class="navbar-toggler"
           type="button"
@@ -158,17 +46,23 @@
             <li class="nav-item">
               <a class="nav-link" href="./home.html">Home</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" id="gamesNavItem">
               <a class="nav-link" href="./game.html">Games</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="./ranking.html">Rankings</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="./teacher-dashboard.html">Teacher Dashboard</a>
+            <li class="nav-item" id="profileNavItem" style="display: none;">
+              <a class="nav-link" href="./profile.html" id="profileLink">Profile</a>
+            </li>
+            <li class="nav-item" id="teacherDashboardNavItem" style="display: none;">
+              <a class="nav-link active" href="./teacher-dashboard.html" id="teacherDashboardLink">Teacher Dashboard</a>
+            </li>
+            <li class="nav-item" id="adminNavItem" style="display: none;">
+              <a class="nav-link" href="./admin.html" id="adminLink">Admin</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="./login.html" id="authLink">Logout</a>
+              <a class="nav-link" href="./login.html" id="authLink">Login</a>
             </li>
           </ul>
         </div>
@@ -176,17 +70,21 @@
     </nav>
 
     <!-- Dashboard Header -->
-    <div class="dashboard-header">
+    <div class="dashboard-header" style="margin-top: 80px;">
       <div class="container">
         <div class="row align-items-center">
           <div class="col-md-8">
             <h1 class="display-5 mb-2" id="dashboardTitle">Teacher Dashboard</h1>
             <p class="lead mb-0" id="dashboardSubtitle">Track student progress and manage your classroom</p>
           </div>
-          <div class="col-md-4 text-end">
-            <button class="btn btn-light me-2" onclick="exportData()">📊 Export Data</button>
-            <button class="btn btn-outline-light" onclick="refreshData()">🔄 Refresh</button>
-          </div>
+            <div class="col-md-4 text-end">
+              <button class="btn btn-light me-2" onclick="exportData()">
+                <i class="fas fa-download me-2"></i>Export Data
+              </button>
+              <button class="btn btn-outline-light" onclick="refreshData()">
+                <i class="fas fa-sync-alt me-2"></i>Refresh
+              </button>
+            </div>
         </div>
       </div>
     </div>
@@ -198,7 +96,9 @@
         <div class="col-12">
           <div class="card border-primary">
             <div class="card-header bg-primary text-white">
-              <h5 class="mb-0">🏫 Your Class Information</h5>
+              <h5 class="mb-0">
+                <i class="fas fa-school me-2"></i>Your Class Information
+              </h5>
             </div>
             <div class="card-body">
               <div class="row align-items-center">
@@ -210,7 +110,7 @@
                   <div class="class-id-display">
                     <span class="class-id-code" id="mainTeacherClassId">Loading...</span>
                     <button class="btn btn-sm btn-outline-primary ms-2" onclick="copyClassId()" title="Copy Class ID">
-                      📋 Copy
+                      <i class="fas fa-copy me-1"></i>Copy
                     </button>
                   </div>
                 </div>
@@ -252,10 +152,11 @@
       <!-- Student Management -->
       <div class="row">
         <div class="col-12">
-          <div class="card">
-            <div class="card-body">
+          <div class="feature-card">
             <div class="d-flex justify-content-between align-items-center mb-3">
-              <h5 class="mb-0">👥 Class Students</h5>
+              <h5 class="mb-0 text-gradient">
+                <i class="fas fa-users me-2"></i>Class Students
+              </h5>
               <div class="d-flex gap-2">
                 <input type="text" class="form-control search-box" id="studentSearch" placeholder="Search students..." style="width: 200px;">
                 <div class="filter-tabs">
@@ -625,11 +526,6 @@
             headerSubtitle.textContent = `Welcome back, ${currentUser.name}! Track student progress and manage your classroom.`;
           }
           
-          // Update navbar brand
-          const navbarBrand = document.querySelector('.navbar-brand');
-          if (navbarBrand) {
-            navbarBrand.textContent = `${currentUser.name}'s BridgeEd`;
-          }
 
         }
       }
@@ -900,9 +796,15 @@
       // Initialize on page load
       document.addEventListener('DOMContentLoaded', initDashboard);
 
-      // Auth check
+      // Auth check and navbar update
       if (window.Auth) {
         Auth.requireAuth('./login.html');
+        // Update navbar after auth check
+        setTimeout(() => {
+          if (window.Auth.updateNavbar) {
+            window.Auth.updateNavbar();
+          }
+        }, 100);
       }
     </script>
   </body>

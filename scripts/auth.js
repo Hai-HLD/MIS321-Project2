@@ -92,6 +92,8 @@ function updateNavbar() {
   const authLink = document.getElementById('authLink');
   const teacherDashboardNavItem = document.getElementById('teacherDashboardNavItem');
   const profileNavItem = document.getElementById('profileNavItem');
+  const adminNavItem = document.getElementById('adminNavItem');
+  const gamesNavItem = document.getElementById('gamesNavItem');
   
   if (authLink) {
     if (isLoggedIn()) {
@@ -120,6 +122,24 @@ function updateNavbar() {
           profileNavItem.style.display = 'none';
         }
       }
+      
+      // Show/hide Admin Dashboard based on user type
+      if (adminNavItem) {
+        if (user.type === 'admin') {
+          adminNavItem.style.display = 'block';
+        } else {
+          adminNavItem.style.display = 'none';
+        }
+      }
+      
+      // Show/hide Games button based on user type
+      if (gamesNavItem) {
+        if (user.type === 'teacher') {
+          gamesNavItem.style.display = 'none';
+        } else {
+          gamesNavItem.style.display = 'block';
+        }
+      }
     } else {
       authLink.textContent = 'Login';
       authLink.href = './login.html';
@@ -132,6 +152,15 @@ function updateNavbar() {
       
       if (profileNavItem) {
         profileNavItem.style.display = 'none';
+      }
+      
+      if (adminNavItem) {
+        adminNavItem.style.display = 'none';
+      }
+      
+      // Show Games button when not logged in
+      if (gamesNavItem) {
+        gamesNavItem.style.display = 'block';
       }
     }
   }
