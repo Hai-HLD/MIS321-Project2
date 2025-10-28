@@ -1,5 +1,0 @@
-Door 2 is the correct choice.
-Note: 2 doors tell the truth, 1 door lies
-Door1: Door 3 is lying
-Door2: I am the correct door
-Door3: Either Door 1 or Door 2 is correct
