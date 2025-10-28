@@ -11,78 +11,98 @@ let isLoading = false; // Prevent spam clicking during transitions
 let currentPuzzle = null; // Current puzzle data
 
 // Embedded puzzle data to avoid CORS issues
-// Converted from resources/game4questions/door#/door#-#.txt files
+// New puzzle format with Left/Center/Right doors and proper rules
 const PUZZLE_DATA = {
-  1: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  2: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  3: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  4: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  5: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  6: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  7: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  8: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  9: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ],
-  10: [
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way way."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way?."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way!."] },
-    { correctDoor: 2, wallNote: "All 3 doors tell the truth", doorMessages: ["This is not the way", "The Right Door is the Way", "This is the way."] }
-  ]
+  1: {
+    correctDoor: 0, // Left Door (0-indexed)
+    wallNote: "All doors tell the truth",
+    doorMessages: [
+      "I am the way forward.",
+      "Left Door is the way forward.", 
+      "Center Door is not the way forward."
+    ]
+  },
+  2: {
+    correctDoor: 1, // Center Door (0-indexed)
+    wallNote: "All doors lie",
+    doorMessages: [
+      "I am the way forward.",
+      "Right Door is the way forward.",
+      "Left Door is the way forward."
+    ]
+  },
+  3: {
+    correctDoor: 1, // Center Door (0-indexed)
+    wallNote: "One door lies, two tell the truth",
+    doorMessages: [
+      "Center Door is the way forward.",
+      "I am the way forward.",
+      "Left Door is lying."
+    ]
+  },
+  4: {
+    correctDoor: 2, // Right Door (0-indexed)
+    wallNote: "One door lies, two tell the truth",
+    doorMessages: [
+      "Right Door is the way forward.",
+      "Left Door is lying.",
+      "Center Door is not the way forward."
+    ]
+  },
+  5: {
+    correctDoor: 2, // Right Door (0-indexed)
+    wallNote: "One door lies, two tell the truth",
+    doorMessages: [
+      "Right Door is the way forward.",
+      "Right Door is lying.",
+      "Left Door is truthful."
+    ]
+  },
+  6: {
+    correctDoor: 2, // Right Door (0-indexed)
+    wallNote: "Two doors lie, one tells the truth",
+    doorMessages: [
+      "Center Door is the way forward.",
+      "Right Door is lying.",
+      "Left Door is the way forward."
+    ]
+  },
+  7: {
+    correctDoor: 2, // Right Door (0-indexed)
+    wallNote: "Two doors lie, one tells the truth",
+    doorMessages: [
+      "Center Door is the way forward.",
+      "Right Door is lying.",
+      "Left Door is lying."
+    ]
+  },
+  8: {
+    correctDoor: 0, // Left Door (0-indexed)
+    wallNote: "Two doors lie, one tells the truth",
+    doorMessages: [
+      "Either Center Door or Right Door is the way forward.",
+      "Left Door is lying and Right Door is the way forward.",
+      "Left Door is the way forward or Center Door is lying."
+    ]
+  },
+  9: {
+    correctDoor: 2, // Right Door (0-indexed)
+    wallNote: "One door lies, one tells the truth, one is unknown, and the safe door must be the truthful door",
+    doorMessages: [
+      "Center Door is the way forward.",
+      "Right Door is lying.",
+      "Left Door is not the way forward."
+    ]
+  },
+  10: {
+    correctDoor: 0, // Left Door (0-indexed)
+    wallNote: "All doors are unknown (can lie or tell the truth), and the safe door must be the truthful door",
+    doorMessages: [
+      "Center Door is not the way forward.",
+      "Right Door is the way forward.",
+      "Left Door is lying."
+    ]
+  }
 };
 
 // DOM elements
@@ -157,7 +177,6 @@ function handleDoorClick(event) {
   const isCorrect = doorIndex === correctDoorIndex;
   
   isLoading = true;
-  pauseTimer();
   hideDoorsAndNote();
   
   if (isCorrect) {
@@ -180,7 +199,6 @@ function handleDoorClick(event) {
         showDoorsAndNote();
         hideFeedback();
         isLoading = false;
-        resumeTimer();
       } else {
         // Game completed successfully!
         isLoading = false;
@@ -196,20 +214,16 @@ function handleDoorClick(event) {
       showDoorsAndNote();
       hideFeedback();
       isLoading = false;
-      resumeTimer();
     }, 500);
   }
 }
 
 // Load puzzle data from embedded data
 function loadPuzzle(roomNumber) {
-  // Randomly select one of 5 puzzle variants
-  const puzzleVariant = Math.floor(Math.random() * 5); // Random index 0-4
+  // Get puzzle for this room (no randomization needed)
+  const puzzle = PUZZLE_DATA[roomNumber];
   
-  // Get puzzles for this room
-  const roomPuzzles = PUZZLE_DATA[roomNumber];
-  
-  if (!roomPuzzles || !roomPuzzles[puzzleVariant]) {
+  if (!puzzle) {
     console.error('Puzzle not found for room:', roomNumber);
     return {
       correctDoor: 0,
@@ -218,7 +232,7 @@ function loadPuzzle(roomNumber) {
     };
   }
   
-  return roomPuzzles[puzzleVariant];
+  return puzzle;
 }
 
 // Update room display with puzzle data

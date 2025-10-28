@@ -13,6 +13,15 @@
       crossorigin="anonymous"
     />
 
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../styles/main.css" />
   </head>
@@ -61,10 +70,74 @@
     <div class="container py-5">
       <h1 class="text-center mb-5">Game Rankings</h1>
 
+      <!-- Game Filter -->
+      <div class="row justify-content-center mb-4">
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title text-center mb-3">Select Ranking Type</h5>
+              <div class="d-grid gap-2">
+                <button class="btn btn-primary" id="totalRankingsBtn">
+                  <i class="fas fa-trophy"></i> Total Score Rankings (Top 10)
+                </button>
+                <div class="btn-group" role="group">
+                  <button class="btn btn-outline-primary" id="game1Btn">Algebra</button>
+                  <button class="btn btn-outline-primary" id="game2Btn">Science</button>
+                  <button class="btn btn-outline-primary" id="game3Btn">Coding</button>
+                  <button class="btn btn-outline-primary" id="game4Btn">Logic</button>
+                  <button class="btn btn-outline-primary" id="game5Btn">Geometry</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Rankings Display -->
       <div class="row justify-content-center">
-        <div class="col-lg-8">
-          <div class="alert alert-info text-center" role="alert">
-            Rankings will be available soon! Start playing games to compete for the top spot.
+        <div class="col-lg-10">
+          <div class="card">
+            <div class="card-header">
+              <h4 class="mb-0" id="rankingTitle">Total Score Rankings</h4>
+              <small class="text-muted" id="rankingSubtitle">Top 10 students by combined score across all games</small>
+            </div>
+            <div class="card-body">
+              <div id="loadingSpinner" class="text-center py-4" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Loading rankings...</p>
+              </div>
+              
+              <div id="errorMessage" class="alert alert-danger" style="display: none;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText">Failed to load rankings. Please try again.</span>
+              </div>
+
+              <div id="rankingsTable" style="display: none;">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead class="table-dark">
+                      <tr>
+                        <th style="width: 80px;">Rank</th>
+                        <th>Student Name</th>
+                        <th style="width: 120px;">Score</th>
+                        <th style="width: 100px;">Games Played</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rankingsBody">
+                      <!-- Rankings will be populated here -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div id="noDataMessage" class="text-center py-5" style="display: none;">
+                <i class="fas fa-chart-line fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No Rankings Available</h5>
+                <p class="text-muted">Students need to play games to appear in the rankings.</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -80,6 +153,7 @@
     <!-- Custom JS -->
     <script src="../scripts/main.js"></script>
     <script src="../scripts/auth.js"></script>
+    <script src="../scripts/ranking.js"></script>
   </body>
 </html>
 

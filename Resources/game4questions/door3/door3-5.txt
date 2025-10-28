@@ -1,5 +1,0 @@
-Door 1 is the correct choice.
-Note: 1 door tells the truth, 2 doors lie
-Door1: Choose me to proceed
-Door2: Door 1 will take you forward
-Door3: Door 2 will take you forward

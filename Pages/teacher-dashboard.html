@@ -267,8 +267,25 @@
               </div>
             </div>
             
-            <div id="studentsList">
-              <!-- Student cards will be populated here -->
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead class="table-dark">
+                  <tr>
+                    <th>Student Name</th>
+                    <th>Average Score</th>
+                    <th>Algebra</th>
+                    <th>Science</th>
+                    <th>Coding</th>
+                    <th>Logic</th>
+                    <th>Geometry</th>
+                    <th>Rating</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="studentsList">
+                  <!-- Student rows will be populated here -->
+                </tbody>
+              </table>
             </div>
             </div>
           </div>
@@ -504,31 +521,31 @@
               progress: averageScore,
               gameCompletions: [
                 { 
-                  game: "Math Challenge", 
+                  game: "Algebra", 
                   completed: (user.scoreGame1 || 0) > 0, 
                   score: user.scoreGame1 || 0, 
                   date: null 
                 },
                 { 
-                  game: "Science Lab", 
+                  game: "Science", 
                   completed: (user.scoreGame2 || 0) > 0, 
                   score: user.scoreGame2 || 0, 
                   date: null 
                 },
                 { 
-                  game: "Robot Beeper Challenge", 
+                  game: "Coding", 
                   completed: (user.scoreGame3 || 0) > 0, 
                   score: user.scoreGame3 || 0, 
                   date: null 
                 },
                 { 
-                  game: "Labyrinth of Lies", 
+                  game: "Logic", 
                   completed: (user.scoreGame4 || 0) > 0, 
                   score: user.scoreGame4 || 0, 
                   date: null 
                 },
                 { 
-                  game: "History Timeline", 
+                  game: "Geometry", 
                   completed: (user.scoreGame5 || 0) > 0, 
                   score: user.scoreGame5 || 0, 
                   date: null 
@@ -662,74 +679,89 @@
         if (filteredStudents.length === 0) {
           if (students.length === 0) {
             container.innerHTML = `
-              <div class="text-center py-5">
-                <div class="mb-4">
-                  <i class="fas fa-users fa-3x text-muted"></i>
-                </div>
-                <h5 class="text-muted">No Students in Class</h5>
-                <p class="text-muted">Students will automatically appear here when they register using your Class ID.</p>
-                <div class="alert alert-info">
-                  <strong>Your Class ID:</strong> <span id="teacherClassId">Loading...</span>
-                  <br><small>Share this 8-digit code with your students for registration.</small>
-                </div>
-              </div>
+              <tr>
+                <td colspan="9" class="text-center py-5">
+                  <div class="mb-4">
+                    <i class="fas fa-users fa-3x text-muted"></i>
+                  </div>
+                  <h5 class="text-muted">No Students in Class</h5>
+                  <p class="text-muted">Students will automatically appear here when they register using your Class ID.</p>
+                  <div class="alert alert-info">
+                    <strong>Your Class ID:</strong> <span id="teacherClassId">Loading...</span>
+                    <br><small>Share this 8-digit code with your students for registration.</small>
+                  </div>
+                </td>
+              </tr>
             `;
           } else {
             container.innerHTML = `
-              <div class="text-center py-5">
-                <div class="mb-4">
-                  <i class="fas fa-search fa-3x text-muted"></i>
-                </div>
-                <h5 class="text-muted">No Students Found</h5>
-                <p class="text-muted">No students match your current search or filter criteria.</p>
-                <button class="btn btn-outline-primary" onclick="clearFilters()">
-                  <i class="fas fa-times"></i> Clear Filters
-                </button>
-              </div>
+              <tr>
+                <td colspan="9" class="text-center py-5">
+                  <div class="mb-4">
+                    <i class="fas fa-search fa-3x text-muted"></i>
+                  </div>
+                  <h5 class="text-muted">No Students Found</h5>
+                  <p class="text-muted">No students match your current search or filter criteria.</p>
+                  <button class="btn btn-outline-primary" onclick="clearFilters()">
+                    <i class="fas fa-times"></i> Clear Filters
+                  </button>
+                </td>
+              </tr>
             `;
           }
           return;
         }
 
         container.innerHTML = filteredStudents.map(student => `
-          <div class="student-card">
-            <div class="row align-items-center">
-              <div class="col-md-2">
-                <h6 class="mb-1">${student.name}</h6>
-                ${student.email ? `<small class="text-muted">${student.email}</small>` : ''}
-              </div>
-              <div class="col-md-2">
-                <div class="progress" style="height: 20px;">
+          <tr>
+            <td>
+              <a href="./profile.html?userId=${student.id}" class="text-decoration-none fw-bold">
+                ${student.name}
+              </a>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="progress me-2" style="width: 80px; height: 20px;">
                   <div class="progress-bar ${getProgressColor(student.progress)}" 
                        style="width: ${student.progress}%"></div>
                 </div>
-                <small class="text-center d-block mt-1">${student.progress}%</small>
+                <span class="fw-bold">${student.progress}%</span>
               </div>
-              <div class="col-md-1">
-                <span class="badge ${getLevelBadgeClass(student.level)}">${getLevelText(student.level)}</span>
-              </div>
-              <div class="col-md-3">
-                <div class="d-flex flex-wrap gap-1">
-                  ${student.gameCompletions.map(game => `
-                    <span class="badge ${game.completed ? 'bg-success' : 'bg-secondary'}">
-                      ${game.completed ? '✅' : '⏳'} ${game.game.split(' ')[0]}
-                    </span>
-                  `).join('')}
-                </div>
-              </div>
-              <div class="col-md-2">
-                <small class="text-muted">${student.lastActive}</small>
-              </div>
-              <div class="col-md-2">
-                <a href="./profile.html?userId=${student.id}" class="btn btn-sm btn-outline-primary me-1">
-                  👁️ Details
-                </a>
-                <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteStudent(${student.id})">
-                  🗑️ Delete
-                </button>
-              </div>
-            </div>
-          </div>
+            </td>
+            <td>
+              <span class="badge ${student.gameCompletions[0].completed ? 'bg-success' : 'bg-secondary'}">
+                ${student.gameCompletions[0].score || 0}
+              </span>
+            </td>
+            <td>
+              <span class="badge ${student.gameCompletions[1].completed ? 'bg-success' : 'bg-secondary'}">
+                ${student.gameCompletions[1].score || 0}
+              </span>
+            </td>
+            <td>
+              <span class="badge ${student.gameCompletions[2].completed ? 'bg-success' : 'bg-secondary'}">
+                ${student.gameCompletions[2].score || 0}
+              </span>
+            </td>
+            <td>
+              <span class="badge ${student.gameCompletions[3].completed ? 'bg-success' : 'bg-secondary'}">
+                ${student.gameCompletions[3].score || 0}
+              </span>
+            </td>
+            <td>
+              <span class="badge ${student.gameCompletions[4].completed ? 'bg-success' : 'bg-secondary'}">
+                ${student.gameCompletions[4].score || 0}
+              </span>
+            </td>
+            <td>
+              <span class="badge ${getLevelBadgeClass(student.level)}">${getLevelText(student.level)}</span>
+            </td>
+            <td>
+              <button class="btn btn-sm btn-outline-danger" onclick="confirmDeleteStudent(${student.id})">
+                <i class="fas fa-trash"></i> Delete
+              </button>
+            </td>
+          </tr>
         `).join('');
       }
 

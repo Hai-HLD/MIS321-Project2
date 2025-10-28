@@ -1,0 +1,50 @@
+PUZZLE 1
+Note: All doors tell the truth
+Left Door: I am the way forward.
+Center Door: Left Door is the way forward.
+Right Door: Center Door is not the way forward.
+PUZZLE 2
+Note: All doors lie
+Left Door: I am the way forward.
+Center Door: Right Door is the way forward.
+Right Door: Left Door is the way forward.
+PUZZLE 3
+Note: One door lies, two tell the truth
+Left Door: Center Door is the way forward.
+Center Door: I am the way forward.
+Right Door: Left Door is lying.
+PUZZLE 4
+Note: One door lies, two tell the truth
+Left Door: Right Door is the way forward.
+Center Door: Left Door is lying.
+Right Door: Center Door is not the way forward.
+PUZZLE 5
+Note: One door lies, two tell the truth
+Left Door: Right Door is the way forward.
+Center Door: Right Door is lying.
+Right Door: Left Door is truthful.
+PUZZLE 6
+Note: Two doors lie, one tells the truth
+Left Door: Center Door is the way forward.
+Center Door: Right Door is lying.
+Right Door: Left Door is the way forward.
+PUZZLE 7
+Note: Two doors lie, one tells the truth
+Left Door: Center Door is the way forward.
+Center Door: Right Door is lying.
+Right Door: Left Door is lying.
+PUZZLE 8
+Note: Two doors lie, one tells the truth
+Left Door: Either Center Door or Right Door is the way forward.
+Center Door: Left Door is lying and Right Door is the way forward.
+Right Door: Left Door is the way forward or Center Door is lying.
+PUZZLE 9
+Note: One door lies, one tells the truth, one is unknown, and the safe door must be the truthful door
+Left Door: Center Door is the way forward.
+Center Door: Right Door is lying.
+Right Door: Left Door is not the way forward.
+PUZZLE 10
+Note: All doors are unknown (can lie or tell the truth), and the safe door must be the truthful door
+Left Door: Center Door is not the way forward.
+Center Door: Right Door is the way forward.
+Right Door: Left Door is lying.
